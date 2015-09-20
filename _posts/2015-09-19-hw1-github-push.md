@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "HW-01: Pushing to Github"
-cover: cover.jpg
+cover: "https://rawgit.com/the-development/flex/master/images/cover.jpg"
 date:   2015-09-19
 categories: posts
 ---
