@@ -11,5 +11,7 @@ categories: posts
 The setup of this site should be sufficient in **demonstrating** that
 I can *and know how to* `push` changes to GitHub.
 
-I would also like to mention that this GitHub Pages themes is called [Flex](https://github.com/the-development/flex)
+p.s. 
+
+The Jekyll theme used is called [Flex](https://github.com/the-development/flex).
 
