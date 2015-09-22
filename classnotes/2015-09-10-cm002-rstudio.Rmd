@@ -1,4 +1,8 @@
-# 2015-09-10: Day 2
+---
+date: 2015-09-10
+title: "Day02: Intro to R"
+---
+
 - [lecture outline](http://stat545-ubc.github.io/cm002_r-rstudio-intro.html)
 
 ### Notes
@@ -11,6 +15,7 @@
 - Brackets -- e.g. `(y <- 1:10)` -- make assignment and print at same time
 - Change "Preference" to not save `.RData`
 
+### R Example script
 ```{r}
 ## Jenny's code
 a <- 2
