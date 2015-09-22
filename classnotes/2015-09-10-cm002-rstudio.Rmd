@@ -11,3 +11,17 @@
 - Brackets -- e.g. `(y <- 1:10)` -- make assignment and print at same time
 - Change "Preference" to not save `.RData`
 
+```{r}
+## Jenny's code
+a <- 2
+b <- 3
+sig_sq <- 0.5
+x <- runif(40)
+y <- a + b * x + rnorm(40, sd = sqrt(sig_sq))
+(avg_x <- mean(x))
+
+plot(x, y)
+abline(a, b, col = "purple", lwd = 2)
+#dev.print("my_purple_line.pdf")
+```
+
