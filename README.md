@@ -1,5 +1,7 @@
 # celia_siu
-Private repository for the 2015 STAT545 coursework of celia_siu
+Welcome to the private repository for the 2015 STAT545 coursework/homework of celia siu.
+
+Follow me on twitter at [celiassiu](https://twitter.com/celiassiu).
 
 ## Project page
 http://stat545-ubc.github.io/celia_siu/
