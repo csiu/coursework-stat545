@@ -16,5 +16,5 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-09-22_cm005: ggplot2](classnotes/2015-09-22-cm005-ggplot2.md)
 
 ## Homework
-- Homework01: *This file*
+- Homework01: *This file* + [reflection](homework/hw01-reflection.md)
 - Homework02: to-be-added
