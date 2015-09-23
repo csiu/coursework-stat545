@@ -1,0 +1,42 @@
+---
+date: 2015-09-17
+title: "Day04: gapminder"
+---
+
+- [lecture outline](http://stat545-ubc.github.io/cm004_care-feeding-data.html)
+- [Homework 1](http://stat545-ubc.github.io/hw01_edit-README.html) is assigned
+
+### Notes
+- cool R package: http://rich-iannone.github.io/DiagrammeR/
+- UBC R Study Group: http://minisciencegirl.github.io/studyGroup/
+- `dplr` to work with data.frames
+- Session -> Restart R to restart search path/packages
+
+### R: Gapminder dataset
+```{r}
+# install.packages("gapminder")
+library(gapminder)
+
+## A look at the data:
+str(gapminder)
+
+## 10 Random rows in the data.frame
+gapminder[sample(nrow(gapminder), 10),]
+
+## Plotting
+plot(lifeExp ~ year, gapminder)
+hist(gapminder$lifeExp)
+table(gapminder$continent)
+barplot(table(gapminder$continent))
+plot(lifeExp ~ log(gdpPercap), gapminder)
+```
+
+```{r}
+## Being awesome and doing the sample plot in ggplot
+library(ggplot2)
+
+ggplot(gapminder, aes(x=log(gdpPercap), y=lifeExp)) +
+    geom_point(aes(color=continent)) + 
+    geom_smooth(lwd = 3, se = FALSE)
+```
+

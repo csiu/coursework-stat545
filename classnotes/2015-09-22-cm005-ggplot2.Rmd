@@ -1,0 +1,33 @@
+---
+date: 2015-09-22
+title: "Day05: Intro to ggplot2"
+---
+
+- [lecture outline](http://stat545-ubc.github.io/cm005_still-data-ggplot2-rmarkdown.html)
+- [DATASET: enrollment to this class](https://gist.github.com/jennybc/924fe242a31e0239762f#file-2015_stat545_enrollment-csv)
+
+### Data wrangling
+- `reorder()` is your friend
+- reshape your data with:
+```
+reshape2::melt
+tidyr::gather
+
+reshape2::cast
+tidyr::spread
+```
+
+- relevant data manipulation packages include: `tidyr`, `reshape2`, `dplyr`, `plyr`
+
+### ggplog2
+- [ggplot2 tutorial](https://github.com/jennybc/ggplot2-tutorial)
+
+- components
+    - data
+    - aesthetic
+    - geom
+    - scale (data values to computer values)
+    - stat (summarization/transformation)
+    - facet (chunk)
+
+- save figures with `ggsave()`
