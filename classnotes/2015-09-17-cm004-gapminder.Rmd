@@ -13,7 +13,7 @@ title: "Day04: gapminder"
 - Session -> Restart R to restart search path/packages
 
 ### R: Gapminder dataset
-```{r}
+```{r, fig.path='figure/cm004-'}
 # install.packages("gapminder")
 library(gapminder)
 
@@ -31,7 +31,7 @@ barplot(table(gapminder$continent))
 plot(lifeExp ~ log(gdpPercap), gapminder)
 ```
 
-```{r}
+```{r, fig.path='figure/cm004-'}
 ## Being awesome and doing the sample plot in ggplot
 library(ggplot2)
 
