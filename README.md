@@ -14,6 +14,7 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-09-15_cm003: rmd](classnotes/2015-09-15-cm003-rmd.md)
 - [2015-09-17_cm004: gapminder](classnotes/2015-09-17-cm004-gapminder.md)
 - [2015-09-22_cm005: ggplot2](classnotes/2015-09-22-cm005-ggplot2.md)
+- [2015-09-23_cm006: rmd](classnotes/2015-09-24-cm006-rmd.md)
 
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
