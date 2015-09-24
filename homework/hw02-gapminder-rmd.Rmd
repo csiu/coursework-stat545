@@ -1,0 +1,130 @@
+---
+title: 'Homework 02: Explore Gapminder and use R markdown'
+author: "csiu"
+date: "2015-09-24"
+output:
+    html_document:
+        keep_md: yes
+---
+
+- [Homework 02](http://stat545-ubc.github.io/hw02_explore-gapminder-use-rmarkdown.html)
+
+```{r}
+library(ggplot2)
+```
+
+
+## Bring rectangular data in
+> - Load the Gapminder data with both functions without specifying args other than file. Do you get the same resulting object in your workspace? Use all the ways we’ve learned to inspect an object to back up your claims with hard facts.
+
+```{r, error=TRUE}
+datafile <- "../data/gapminder.txt"
+
+data      <- read.delim(datafile)
+datatable <- read.table(datafile)
+```
+
+Unlike `read.delim`, running `read.table` without any arguments will result to an error. One of the reason is because "`line 146 did not have 6 elements`".
+
+```{r}
+data[146,]
+```
+
+> - If you’re not getting the same object, why not?
+
+They are not the same object because `read.delim` results to a R object, whereas `read.table` does not (i.e. an error appears instead).
+
+> - Develop the call to read.table() that is equivalent to read.delim(), i.e. how do you need to set various arguments and describe this in prose as well.
+
+To do this, we need to specify `header=TRUE, sep="\t", quote="\""`:
+```{r}
+datatable <- read.table(datafile, header=TRUE, sep="\t", quote="\"")
+str(datatable)
+
+str(data)
+```
+The number of dimensions in both objects are the same. Regardless, the moral of the story -- in my opinion -- is that `read.delim` is far superior to `read.table`.
+
+## Smell test the data
+> - Is it a data.frame, a matrix, a vector, a list?
+
+The imported `data` object is a data.frame
+
+> - What’s its mode, class?
+
+```{r}
+(data_class <- class(data))
+```
+
+> - How many variables?
+
+```{r}
+(data_ncol <- ncol(data))
+```
+
+> - How many rows/observations?
+
+```{r}
+(data_nrow <- nrow(data))
+```
+
+> - Can you get these facts about “extent” or “size” in more than one way? Can you imagine different functions being useful in different contexts?
+
+```{r}
+(data_dim <- dim(data))
+```
+
+> - What flavor is each the variable?
+```{r}
+str(data_class)
+str(data_nrow)
+str(data_ncol)
+str(data_dim)
+```
+
+## Explore individual variables
+> - Characterize what’s possible, i.e. all possible values or max vs. min … whatever’s appropriate.
+> - What’s typical? What’s the spread? What’s the distribution? Etc., tailored to the variable at hand.
+> - Feel free to use summary stats, tables, figures. We’re NOT expecting high production value (yet).
+
+### categorical variable == `"continent"`
+```{r, fig.path='figure/hw02-'}
+## All possible values of continent
+levels(data$continent)
+
+## Number of observations per continent per year
+table(data$continent, data$year)
+
+## Since the number of observation per continent per year is the same across years,
+## I will make a plot with the observations per continent in 2007
+ggplot(with(data, subset(data, subset = (year == "2007"))),
+       aes(x=continent, y=..count..)) +
+  geom_bar()
+```
+
+We have the most data from Africa.
+
+### quantitiative variable == `"lifeExp"`
+```{r, fig.path='figure/hw02-'}
+summary(data$lifeExp)
+
+g <- ggplot(data, aes(x=lifeExp, y=..density..)) +
+  geom_histogram(binwidth=1, fill="grey") +
+  geom_density()
+g
+g + facet_wrap(~ year)
+```
+
+We are living longer!
+
+## Report your process
+I thought this assignment was pretty easy. It helps when one is familiar with R and have used `ggplot2` before.
+
+## Extra
+```{r, fig.path='figure/hw02-'}
+ggplot(data, aes(x=country, y=pop)) +
+  geom_point() +
+  facet_wrap(~ year) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
