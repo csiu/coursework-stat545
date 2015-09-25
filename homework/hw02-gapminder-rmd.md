@@ -229,17 +229,80 @@ g + facet_wrap(~ year)
 
 We are living longer!
 
-## Report your process
-I thought this assignment was pretty easy. It helps when one is familiar with R and have used `ggplot2` before.
-
 ## Extra
+### A look at global life expectancy in 2007 
 
 ```r
-ggplot(data, aes(x=country, y=pop)) +
-  geom_point() +
-  facet_wrap(~ year) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplot(with(data, subset(data, subset = (year == "2007"))),
+       aes(x=log(pop),
+           y=log(gdpPercap), 
+           label=country,           
+           color=lifeExp,
+           size=lifeExp
+           )) +
+  geom_point() + 
+  geom_text(hjust=0, vjust=0, size=3) +
+  scale_size_continuous(guide=guide_legend(reverse=TRUE)) + 
+  scale_color_gradient(low="yellow", high="blue") 
 ```
 
 ![](figure/hw02-unnamed-chunk-12-1.png) 
 
+Here we see that as gdp per capita goes up, so does life expectancy. On the other hand, when the population size changes, life expectancy (as well as gdp per capita) does not change. 
+
+### A closer look at countries in Americas through time
+
+```r
+data_americas <- with(data, 
+                      subset(data, subset = (continent == "Americas")))
+
+## Countries in Americas:
+unique(as.character(data_americas$country))
+```
+
+```
+##  [1] "Argentina"           "Bolivia"             "Brazil"             
+##  [4] "Canada"              "Chile"               "Colombia"           
+##  [7] "Costa Rica"          "Cuba"                "Dominican Republic" 
+## [10] "Ecuador"             "El Salvador"         "Guatemala"          
+## [13] "Haiti"               "Honduras"            "Jamaica"            
+## [16] "Mexico"              "Nicaragua"           "Panama"             
+## [19] "Paraguay"            "Peru"                "Puerto Rico"        
+## [22] "Trinidad and Tobago" "United States"       "Uruguay"            
+## [25] "Venezuela"
+```
+
+```r
+p <- ggplot(data_americas,
+       aes(x=log(pop),
+           y=log(gdpPercap), 
+           label=country,           
+           color=lifeExp,
+           size=lifeExp
+           )) +
+  geom_point() + 
+  geom_text(hjust=0, vjust=0, size=2, color="black") +
+  scale_size_continuous(guide=guide_legend(reverse=TRUE)) + 
+  scale_color_gradient(low="yellow", high="blue") 
+```
+
+
+```r
+p + facet_grid(year ~ .)
+```
+
+![](figure/hw02-unnamed-chunk-14-1.png) 
+
+Here we see that population size tends to increase.
+
+
+```r
+p + facet_grid(. ~ year)
+```
+
+![](figure/hw02-unnamed-chunk-15-1.png) 
+
+Here we see that the spread of gdp per capita between the richest and poorest countries tends to increase. We also see that life expectancy tends to get longer too.
+
+## Report your process
+I thought this assignment was pretty easy. It helps when one is familiar with R and have used `ggplot2` before.
