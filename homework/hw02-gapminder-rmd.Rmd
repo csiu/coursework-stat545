@@ -7,7 +7,7 @@ output:
         keep_md: yes
 ---
 
-- [Homework 02](http://stat545-ubc.github.io/hw02_explore-gapminder-use-rmarkdown.html)
+- Link to [Homework 02](http://stat545-ubc.github.io/hw02_explore-gapminder-use-rmarkdown.html)
 
 ```{r}
 library(ggplot2)
@@ -36,14 +36,14 @@ They are not the same object because `read.delim` results to a R object, whereas
 
 > - Develop the call to read.table() that is equivalent to read.delim(), i.e. how do you need to set various arguments and describe this in prose as well.
 
-To do this, we need to specify `header=TRUE, sep="\t", quote="\""`:
+To do this, we need to specify `header=TRUE, sep="\t", quote="\""` i.e.
 ```{r}
 datatable <- read.table(datafile, header=TRUE, sep="\t", quote="\"")
 str(datatable)
 
 str(data)
 ```
-The number of dimensions in both objects are the same. Regardless, the moral of the story -- in my opinion -- is that `read.delim` is far superior to `read.table`.
+The number of dimensions in both objects are now the same. Regardless, the moral of the story -- in my opinion -- is that `read.delim` is far superior to `read.table`.
 
 ## Smell test the data
 > - Is it a data.frame, a matrix, a vector, a list?
@@ -170,4 +170,4 @@ p + facet_grid(. ~ year)
 Here we see that the spread of gdp per capita between the richest and poorest countries tends to increase. We also see that life expectancy tends to get longer too.
 
 ## Report your process
-I thought this assignment was pretty easy. It helps when one is familiar with R and have used `ggplot2` before.
+I thought this assignment was pretty fun and easy. It also helps that I am familiar with R and have used `ggplot2` before.

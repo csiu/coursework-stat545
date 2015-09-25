@@ -2,7 +2,7 @@
 csiu  
 2015-09-24  
 
-- [Homework 02](http://stat545-ubc.github.io/hw02_explore-gapminder-use-rmarkdown.html)
+- Link to [Homework 02](http://stat545-ubc.github.io/hw02_explore-gapminder-use-rmarkdown.html)
 
 
 ```r
@@ -43,7 +43,7 @@ They are not the same object because `read.delim` results to a R object, whereas
 
 > - Develop the call to read.table() that is equivalent to read.delim(), i.e. how do you need to set various arguments and describe this in prose as well.
 
-To do this, we need to specify `header=TRUE, sep="\t", quote="\""`:
+To do this, we need to specify `header=TRUE, sep="\t", quote="\""` i.e.
 
 ```r
 datatable <- read.table(datafile, header=TRUE, sep="\t", quote="\"")
@@ -73,7 +73,7 @@ str(data)
 ##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
 ##  $ gdpPercap: num  779 821 853 836 740 ...
 ```
-The number of dimensions in both objects are the same. Regardless, the moral of the story -- in my opinion -- is that `read.delim` is far superior to `read.table`.
+The number of dimensions in both objects are now the same. Regardless, the moral of the story -- in my opinion -- is that `read.delim` is far superior to `read.table`.
 
 ## Smell test the data
 > - Is it a data.frame, a matrix, a vector, a list?
@@ -230,30 +230,30 @@ g + facet_wrap(~ year)
 We are living longer!
 
 ## Extra
-### A look at global life expectancy in 2007 
+### A look at global life expectancy in 2007
 
 ```r
 ggplot(with(data, subset(data, subset = (year == "2007"))),
        aes(x=log(pop),
-           y=log(gdpPercap), 
-           label=country,           
+           y=log(gdpPercap),
+           label=country,
            color=lifeExp,
            size=lifeExp
            )) +
-  geom_point() + 
+  geom_point() +
   geom_text(hjust=0, vjust=0, size=3) +
-  scale_size_continuous(guide=guide_legend(reverse=TRUE)) + 
-  scale_color_gradient(low="yellow", high="blue") 
+  scale_size_continuous(guide=guide_legend(reverse=TRUE)) +
+  scale_color_gradient(low="yellow", high="blue")
 ```
 
 ![](figure/hw02-unnamed-chunk-12-1.png) 
 
-Here we see that as gdp per capita goes up, so does life expectancy. On the other hand, when the population size changes, life expectancy (as well as gdp per capita) does not change. 
+Here we see that as gdp per capita goes up, so does life expectancy. On the other hand, when the population size changes, life expectancy (as well as gdp per capita) does not change.
 
 ### A closer look at countries in Americas through time
 
 ```r
-data_americas <- with(data, 
+data_americas <- with(data,
                       subset(data, subset = (continent == "Americas")))
 
 ## Countries in Americas:
@@ -275,15 +275,15 @@ unique(as.character(data_americas$country))
 ```r
 p <- ggplot(data_americas,
        aes(x=log(pop),
-           y=log(gdpPercap), 
-           label=country,           
+           y=log(gdpPercap),
+           label=country,
            color=lifeExp,
            size=lifeExp
            )) +
-  geom_point() + 
+  geom_point() +
   geom_text(hjust=0, vjust=0, size=2, color="black") +
-  scale_size_continuous(guide=guide_legend(reverse=TRUE)) + 
-  scale_color_gradient(low="yellow", high="blue") 
+  scale_size_continuous(guide=guide_legend(reverse=TRUE)) +
+  scale_color_gradient(low="yellow", high="blue")
 ```
 
 
@@ -305,4 +305,4 @@ p + facet_grid(. ~ year)
 Here we see that the spread of gdp per capita between the richest and poorest countries tends to increase. We also see that life expectancy tends to get longer too.
 
 ## Report your process
-I thought this assignment was pretty easy. It helps when one is familiar with R and have used `ggplot2` before.
+I thought this assignment was pretty fun and easy. It also helps that I am familiar with R and have used `ggplot2` before.
