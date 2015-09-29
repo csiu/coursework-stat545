@@ -53,6 +53,7 @@ The imported `data` object is a data.frame
 > - What’s its mode, class?
 
 ```{r}
+(data_mode <- mode(data))
 (data_class <- class(data))
 ```
 
@@ -76,6 +77,7 @@ The imported `data` object is a data.frame
 
 > - What flavor is each the variable?
 ```{r}
+str(data_mode)
 str(data_class)
 str(data_nrow)
 str(data_ncol)

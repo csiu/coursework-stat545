@@ -84,6 +84,14 @@ The imported `data` object is a data.frame
 
 
 ```r
+(data_mode <- mode(data))
+```
+
+```
+## [1] "list"
+```
+
+```r
 (data_class <- class(data))
 ```
 
@@ -125,6 +133,14 @@ The imported `data` object is a data.frame
 ```
 
 > - What flavor is each the variable?
+
+```r
+str(data_mode)
+```
+
+```
+##  chr "list"
+```
 
 ```r
 str(data_class)
