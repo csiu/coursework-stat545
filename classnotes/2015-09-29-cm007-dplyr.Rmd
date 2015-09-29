@@ -1,0 +1,82 @@
+---
+title: "dplyr"
+author: "csiu"
+date: "2015-09-29"
+output:
+    html_document:
+        keep_md: yes
+---
+
+- [lecture outline](http://stat545-ubc.github.io/cm007_dplyr-intro.html)
+- theme of the week: `dplyr`
+- split-apply-combine workflow
+
+## dplyr
+- [Intro to dplyr](http://stat545-ubc.github.io/block009_dplyr-intro.html): data.frame in, data.frame out
+    - good for subsetting
+- older package = `plyr`
+
+```{r}
+suppressPackageStartupMessages(library(dplyr)) ## dplyr is chatty
+library(gapminder)
+library(ggplot2)
+
+## what packages is attached
+search()
+```
+
+```{r}
+## transform to "tbl_df"" object
+(gtbl <- tbl_df(gapminder))
+
+## get a glimpse of data
+glimpse(gtbl)
+
+## special: 
+class(gtbl)
+```
+- `tbl_df` -special class of-> `tbl` -special class of-> `data.frame`
+
+### `filter()`: row-wise filtering (and `select()`: column-wise filtering)
+```{r}
+## [WHAT YOU WOULD HAVE DONE BEFORE]
+snippet <- subset(gapminder, country == "Canada")
+#     country continent year lifeExp      pop gdpPercap
+# 241  Canada  Americas 1952  68.750 14785584  11367.16
+# 242  Canada  Americas 1957  69.960 17010154  12489.95
+# 243  Canada  Americas 1962  71.300 18985849  13462.49
+# ...
+
+## [WHAT YOU WOULD DO AFTER]
+filter(gtbl, country %in% c("Canada"), lifeExp < 70)
+```
+- with `dplyr::filter` (and other functions), don't need "dataframe`$`variable"
+    - i.e. assumes look within data.frame
+- multiple expression in function get logical-and
+
+### pipe operator: `%>%`
+- new, mildly controversial, from package `magrittr`
+- Shortcut: `command-shift-m`
+
+```{r fig.path='figure/cm007-'}
+## Example
+gapminder %>% 
+  filter(continent == "Americas") %>% 
+  select(country, lifeExp) %>%
+  
+  #head(50) %>% tail(10) %>% 
+  
+  ggplot(aes(x=country, y=lifeExp)) + ## can pipe into ggplot
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+### List of functions from `dplyr`
+- `filter()`: Return **rows** with matching conditions
+- `select()`: Select/rename **variables** by name
+
+- `mutate()`: Add new variables
+- `arrange()`: Arrange rows by variables
+- `rename()`: Select/rename variables by name
+
+- `group_by()`: Group a tbl by one or more variables
