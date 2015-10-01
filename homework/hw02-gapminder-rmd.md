@@ -243,7 +243,7 @@ g + facet_wrap(~ year)
 
 ![](figure/hw02-unnamed-chunk-11-2.png) 
 
-We are living longer!
+We are living longer! (Immortality, here we come!)
 
 ## Extra
 ### A look at global life expectancy in 2007
@@ -267,6 +267,7 @@ ggplot(with(data, subset(data, subset = (year == "2007"))),
 Here we see that as gdp per capita goes up, so does life expectancy. On the other hand, when the population size changes, life expectancy (as well as gdp per capita) does not change.
 
 ### A closer look at countries in Americas through time
+_Note: I focus on this subset because this is the continent I -- someone of Generation Me Me Me -- live on._
 
 ```r
 data_americas <- with(data,
@@ -309,7 +310,7 @@ p + facet_grid(year ~ .)
 
 ![](figure/hw02-unnamed-chunk-14-1.png) 
 
-Here we see that population size tends to increase.
+Here we see that population size tends to increase in the Americas.
 
 
 ```r
@@ -321,4 +322,4 @@ p + facet_grid(. ~ year)
 Here we see that the spread of gdp per capita between the richest and poorest countries tends to increase. We also see that life expectancy tends to get longer too.
 
 ## Report your process
-I thought this assignment was pretty fun and easy. It also helps that I am familiar with R and have used `ggplot2` before.
+I thought this assignment was pretty fun and easy. It also helps that I am familiar with R and have used `ggplot2` before. Upon looking at the data, I am also somewhat surprised that the range in GDP is getting bigger in the Americas.
