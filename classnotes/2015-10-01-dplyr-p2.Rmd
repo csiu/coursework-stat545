@@ -1,0 +1,94 @@
+---
+title: "dplyr part2 + R data structures"
+author: "csiu"
+date: "2015-10-01"
+output:
+    html_document:
+        keep_md: yes
+---
+
+- [lecture outline](http://stat545-ubc.github.io/cm008_dplyr-contd.html)
+
+- R package for captioning: [captioner](https://cran.r-project.org/web/packages/captioner/index.html)
+- use rawgit.com to view HTML
+
+## dplyr part2
+- [dplyr functions for a single dataset](http://stat545-ubc.github.io/block010_dplyr-end-single-table.html)
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+library(gapminder)
+gtbl <- gapminder %>%
+  tbl_df
+```
+
+### `mutate()`: to add new variable
+- like `transform` in base R
+
+### `arrange()`: to arrange row order
+```{r}
+gtbl %>%
+  arrange(year, country) ## order by year and then country
+```
+
+### `rename()`: to rename variables 
+- i.e. `lifeExp` to `life_exp`
+```{r}
+gtbl %>%
+  rename(life_exp = lifeExp,
+         gdp_percap = gdpPercap) %>% 
+  head(4)
+```
+
+### `group_by()`: Group a tbl by one or more variables
+- split-apply-combine
+- group_by will group rows
+
+- `summarize()`/`summarise()`: n observations -> distill to 1 observation
+- `window()`: n observations -> maps to n observations
+- `do()` (will cover later)
+
+#### Example: Counting things inside each group with `summarize()`
+```{r}
+gtbl %>% 
+  group_by(continent) %>% 
+  summarize(n_obs = n())
+
+table(gtbl$continent)
+```
+- _Point: Don't want super important information to be names_
+
+#### `summarize_each()`: Summarise and mutate multiple columns
+> ... applies the same summary function(s) to multiple variables. Let’s compute average and median life expectancy and GDP per capita by continent by year … but only for 1952 and 2007.
+```{r}
+gtbl %>%
+  filter(year %in% c(1952, 2007)) %>%
+  group_by(continent, year) %>%
+  summarise_each(funs(mean, median), lifeExp, gdpPercap) %>% 
+  head(4)
+```
+
+#### Window functions
+- `min_rank()` - ranks list according to ascending order; ties are broken my taking the min
+- `desc()` - transforms vector to format that will be sorte in descending order
+```{r}
+gtbl %>%
+  filter(continent == "Asia") %>%
+  select(year, country, lifeExp) %>%
+  arrange(year) %>%
+  group_by(year) %>%
+  filter(min_rank(desc(lifeExp)) < 2 | min_rank(lifeExp) < 2) %>%  #find min or max
+  head(4)
+```
+- alternative approach: `top_n()` which wraps `filter` and `min_rank` to select top n entries in each group
+```{r}
+## ANOTHER EXAMPLE
+gtbl %>%
+  filter(continent == "Asia") %>%
+  select(year, country, lifeExp) %>%
+  arrange(year) %>%
+  group_by(year) %>%
+  #top_n(1)               ## gets the min
+  top_n(1, desc(lifeExp)) %>% ## gets the max
+  head(4)
+```
