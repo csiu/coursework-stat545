@@ -7,7 +7,7 @@ output:
         keep_md: yes
 ---
 ```{r include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, fig.path='figure/hw03-')
+knitr::opts_chunk$set(fig.path='figure/hw03-')
 ```
 
 - Link to [Homework 03](http://stat545-ubc.github.io/hw03_dplyr-and-more-ggplot2.html)
