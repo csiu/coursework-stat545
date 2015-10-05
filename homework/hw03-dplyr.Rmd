@@ -32,7 +32,7 @@ gapminder_df <- read.delim("../data/gapminder.txt")
 ## Task 01: 
 > Get the maximum and minimum of GDP per capita for all continents
 
-To obtain the min and max GDP per capita for all continents, we first grouped the gapminder data by continent and then filtered (in each group i.e. continent) for the min and max GDP per capita. Next, we arranged the data to be sorted by continent name and then by GDP per capita so that one can easily find a continent and look at its min or max GDP per capita value. In addition to the continent and GDP per capita value, we also presented the associated country, year, life expectancy, and population data.
+To obtain the min and max GDP per capita for all continents, we first grouped the gapminder data by continent and then filtered (in each group i.e. continent) for the min and max GDP per capita. Next, we arranged the data to be sorted by continent name and then by GDP per capita so that one can easily find a continent and look at its min or max GDP per capita value. In addition to the continent and GDP per capita values, we also presented the associated country, year, life expectancy, and population data.
 
 ```{r}
 gapminder_df %>% 
@@ -43,7 +43,7 @@ gapminder_df %>%
   kable(format="markdown")
 ```
 
-From the data, its interesting to note the min and max GDP per capita within Oceania both belongs to Australia (of different years). Since 1952, the GDP per capita in Australia has increased as did life expectancy and population size.
+From the data, it's interesting to see that the min and max GDP per capita within Oceania both belongs to Australia (of different years). Since 1952, the GDP per capita in Australia has increased as did life expectancy and population size.
 
 In the next bit, we summarized the information differently to show only the continent and its min and max GDP per capita.
 
@@ -66,12 +66,12 @@ df_task1 %>%
   ylab("gdpPercap")
 ```
 
-Here we can see that Africa is the continent with the min GDP per captia and Asia is the continent with the max GDP per capita.
+Here we can see that Africa is the continent with the min GDP per captia and Asia is the continent with the max GDP per capita. From this figure, we can also see that Asia is the continent with the greatest range of GDP per capita.
 
 ## Task 02: 
 > Look at the spread of GDP per capita within the continents.
 
-To consider spread of GDP per capita within the continents, I listed each continent's number of observations, mean, median, standard deviation, min, max, and range of GDP per capita. 
+To consider the spread of GDP per capita within the continents, I listed the number of observations, mean, median, standard deviation, min, max, and range of GDP per capita for each continent. 
 
 ```{r}
 gapminder_df %>% 
@@ -119,7 +119,7 @@ df_task3 %>%
   kable(format="markdown")
 ```
 
-Here we calculated the mean life expectancy, mean population, and mean GDP per capita for the different years. In the following figure, we can see that as the years go by, the average life expectancy, population size, and GDP per capita increases. 
+Here we calculated the mean life expectancy, mean population, and mean GDP per capita for the different years. In the following figure, we can see that the average life expectancy, population size, and GDP per capita increases with time. 
 
 (This figure was generated from code based on [hadley's "Align two plots on a page"](https://github.com/hadley/ggplot2/wiki/Align-two-plots-on-a-page)).
 
@@ -141,7 +141,7 @@ df_task3 %>%
 ```
 
 ### Non-vanilla mean
-In addition to plain vanilla mean of life expectancy, we can add additional columns such as weighing this value with the average population size or the average GDP per capita.
+In addition to plain vanilla mean of life expectancy, we can add additional columns such as weighing this value (i.e. the mean life expectancy) with the average population size or with the average GDP per capita.
 
 ```{r}
 df_task3 <- df_task3 %>% 
@@ -187,7 +187,7 @@ gapminder_df %>%
   kable(format="markdown")
 ```
 
-Another way to visualize this data is by boxplots. 
+Another way to visualize this data is by boxplots.
 
 ```{r fig.height=4, fig.width=11}
 gapminder_df %>% 
@@ -200,7 +200,7 @@ gapminder_df %>%
         axis.ticks.x = element_blank())
 ```
 
-Here we see that in 1992, there is 1 country in Africa with unexpectedly low life expectancy.
+In the boxplots, Oceania is present. Also present are outlier data points. Here we see that in 1992, there is 1 country in Africa with unexpectedly low life expectancy.
 
 ```{r}
 gapminder_df %>% 
@@ -233,9 +233,9 @@ df_task5 %>%
   ggtitle("Rwanda")
 ```
 
-Here we plotted Rwanda's population size, life expectancy, and GDP per capita across time. From the previous task, we know that the Rwandan Civil War occurred between 1990-1993, which explained the dip in life expectancy from above 40 to below 25 years in 1992. What is surprising here is that the population size did not decrease during this time. On the other hand, it looks like there is a slight increase despite the presence of war.
+Here we plotted Rwanda's population size, life expectancy, and GDP per capita across time. From the previous task, we know that the Rwandan Civil War occurred between 1990-1993, which explained the dip in life expectancy from above 40 to below 25 years in 1992. What is surprising here is that the population size did not (despite the presence of war) decrease during this time; on the other hand, it looks like there is a slight increase.
 
-To interpret the GDP per capita of Rwanda, we will consider this in relation to other GDP per capita of other countries in Africa.
+To interpret the GDP per capita of Rwanda, we will consider this in relation to the GDP per capita of other countries in Africa.
 
 ```{r}
 gapminder_df %>% 
@@ -254,7 +254,7 @@ From this plot, we see that the GDP per capita of Rwanda (red) is not the lowest
 ## Task 06:
 > Report the absolute and/or relative abundance of countries with low life expectancy over time by continent: Compute some measure of worldwide life expectancy – you decide – a mean or median or some other quantile or perhaps your current age. The determine how many countries on each continent have a life expectancy less than this benchmark, for each year.
 
-Taking a look at global life expectancy through time, we see that 1 country in Aisa (i.e. Cambodia) also has an unexpected dip in life Expectancy in 1977. 
+Taking a look at global life expectancy through time, we see that in addition to Rwanda (red) 1 country in Aisa (i.e. Cambodia in green) also has an unexpected dip in life Expectancy in 1977. 
 
 ```{r}
 gapminder_df %>% 
@@ -273,7 +273,7 @@ gapminder_df %>%
   kable(format="markdown")
 ```
 
-Googling "Cambodia 1977", we get [Cambodian genocide](https://en.wikipedia.org/wiki/Cambodian_genocide) which occurred between 1975 and 1979.
+Googling "Cambodia 1977", we get another mass killing: [Cambodian genocide](https://en.wikipedia.org/wiki/Cambodian_genocide) which occurred between 1975 and 1979.
 
 ## Task 07:
 > Make up your own! Between the `dplyr` coverage in class and the list above, I think you get the idea.
@@ -297,11 +297,11 @@ gapminder_df %>%
   kable(format="markdown")
 ```
 
-In [wikipedia, "Kuwait"](https://en.wikipedia.org/wiki/Kuwait) is noted to be:
+In [wikipedia, "Kuwait"](https://en.wikipedia.org/wiki/Kuwait) is ...
 
-> _Kuwait is a constitutional emirate with a high income economy backed by the world's sixth largest oil reserves. The Kuwaiti dinar is the highest valued currency in the world. The country ranks highly in regional comparisons of protection of civil liberties, press freedom and constitutionalism. In recent years, political instability has hindered the country's economic diversification._
+> _... a constitutional emirate with a high income economy backed by the world's sixth largest oil reserves. The Kuwaiti dinar is the highest valued currency in the world. The country ranks highly in regional comparisons of protection of civil liberties, press freedom and constitutionalism. In recent years, political instability has hindered the country's economic diversification._
 
 ## Final thoughts
 In high school, I never liked history; too many names and too many dates. But looking at history through the lens of data, is fascinating!!
 
-Overall, this assigment was simple (since I'm familiar with R and ggplot2) yet endless (since there is a great number of ways the data can be manipulated and explored). 
+Overall, this assigment was simple (since I'm familiar with R and ggplot2) yet endless (since there is a great number of ways the data can be manipulated and explored). All in all, this was a cool assignment!
