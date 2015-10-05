@@ -40,7 +40,7 @@ gapminder_df %>%
   filter(min_rank(gdpPercap) < 2 | min_rank(desc(gdpPercap)) < 2) %>% 
   arrange(continent, gdpPercap) %>%
   select(continent, gdpPercap, country, year, lifeExp, pop) %>% 
-  kable()
+  kable(format="markdown")
 ```
 
 From the data, its interesting to note the min and max GDP per capita within Oceania both belongs to Australia (of different years). Since 1952, the GDP per capita in Australia has increased as did life expectancy and population size.
@@ -53,7 +53,8 @@ df_task1 <- gapminder_df %>%
   summarise(min_gdpPercap = min(gdpPercap),
             max_gdpPercap = max(gdpPercap))
 
-df_task1 %>% kable()
+df_task1 %>%
+  kable(format="markdown")
 
 df_task1 %>% 
   gather(variable, value, -continent) %>% 
@@ -82,7 +83,7 @@ gapminder_df %>%
             gdpPercap_min = min(gdpPercap),
             gdpPercap_max = max(gdpPercap),
             gdpPercap_range = max(gdpPercap) - min(gdpPercap)) %>% 
-  kable()
+  kable(format="markdown")
 ```
 
 Here we see that Oceania has the fewest number of observations whereas Africa has the most. On the other hand, looking at the mean and median GDP per capita, Africa has the lowest wherease Oceania has the most. Considering the range of GDP per capita of countries with the continents, Africa has the smallest range and Asia has the greatest range.
@@ -115,7 +116,7 @@ df_task3 <- gapminder_df %>%
             mean_gdpPercap = mean(gdpPercap))
 
 df_task3 %>%
-  kable()
+  kable(format="markdown")
 ```
 
 Here we calculated the mean life expectancy, mean population, and mean GDP per capita for the different years. In the following figure, we can see that as the years go by, the average life expectancy, population size, and GDP per capita increases. 
@@ -148,7 +149,7 @@ df_task3 <- df_task3 %>%
          lifeExp_gdpPercap = mean_lifeExp * mean_gdpPercap)
 
 df_task3 %>% 
-  kable()
+  kable(format="markdown")
 ```
 
 The weighted plot will then look something like this: 
@@ -183,7 +184,7 @@ In general, life expectancy is increasing over time on all the different contine
 ```{r}
 gapminder_df %>% 
   filter(continent == "Oceania") %>% 
-  kable()
+  kable(format="markdown")
 ```
 
 Another way to visualize this data is by boxplots. 
@@ -205,7 +206,7 @@ Here we see that in 1992, there is 1 country in Africa with unexpectedly low lif
 gapminder_df %>% 
   filter(year=="1992", continent=="Africa") %>% 
   filter(lifeExp == min(lifeExp)) %>% 
-  kable()
+  kable(format="markdown")
 ```
 
 This country is Rwanda. Googling "Rwanda 1992", we get [Rwandan Civil War](https://en.wikipedia.org/wiki/Rwandan_Civil_War) from 1990-1993 -- which explains the low life expectancy.
@@ -269,7 +270,7 @@ gapminder_df %>%
 gapminder_df %>% 
   filter(year=="1977", continent=="Asia") %>% 
   filter(lifeExp==min(lifeExp)) %>% 
-  kable()
+  kable(format="markdown")
 ```
 
 Googling "Cambodia 1977", we get [Cambodian genocide](https://en.wikipedia.org/wiki/Cambodian_genocide) which occurred between 1975 and 1979.
@@ -293,7 +294,7 @@ This country is Kuwait.
 ```{r}
 gapminder_df %>%
   filter(gdpPercap == max(gdpPercap)) %>% 
-  kable()
+  kable(format="markdown")
 ```
 
 In [wikipedia, "Kuwait"](https://en.wikipedia.org/wiki/Kuwait) is noted to be:
