@@ -21,4 +21,4 @@ _These notes are the difference between what I already know and what I find inte
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
 - Homework02: [exploring gapminder and using rmd](homework/hw02-gapminder-rmd.md)
-
+- Homework03: [manipulating and exploring data with dplyr and ggplot2](homework/hw03-dplyr.md)
