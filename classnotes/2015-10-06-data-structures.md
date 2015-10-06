@@ -5,6 +5,7 @@ csiu
 - `dplr` - domain specific language
 - [lecture outline](http://stat545-ubc.github.io/cm009_r-objects-collections.html)
 
+```
 +-----------+---------------+-----------+-----------+
 | "flavor"  | type reported | mode()    | class()   |
 |           | by typeof()   |           |           |
@@ -18,6 +19,7 @@ csiu
 +-----------+---------------+-----------+-----------+
 | factor    | integer       | numeric   | factor    |
 +-----------+---------------+-----------+-----------+
+```
 
 ### intrinsic vector nature of R
 
