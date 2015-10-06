@@ -1,11 +1,14 @@
 ---
-title: "dplyr part2 + R data structures"
+title: "Day08: dplyr part2 + R data structures"
 author: "csiu"
 date: "2015-10-01"
 output:
     html_document:
         keep_md: yes
 ---
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.path='figure/cm008-')
+```
 
 - [lecture outline](http://stat545-ubc.github.io/cm008_dplyr-contd.html)
 
@@ -91,4 +94,17 @@ gtbl %>%
   #top_n(1)               ## gets the min
   top_n(1, desc(lifeExp)) %>% ## gets the max
   head(4)
+```
+
+----
+## Jenny's example code:
+```{r}
+library(ggplot2)
+library(gapminder)
+
+ggplot(gapminder, aes(x = continent, y = gdpPercap)) +
+  scale_y_log10() +
+  geom_jitter(position = position_jitter(width = 0.1, height = 0), alpha = 1/4) +
+  stat_summary(fun.y = min, colour = "blue", geom = "point", size = 5) +
+  stat_summary(fun.y = max, colour = "orange", geom = "point", size = 5)
 ```
