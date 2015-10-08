@@ -1,0 +1,93 @@
+---
+title: "functions"
+author: "csiu"
+date: "October 8, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+```{r}
+library(gapminder)
+```
+
+## How to write functions in R
+
+- [write your own function](http://stat545-ubc.github.io/block011_write-your-own-function-01.html)
+- for use in split-apply-combine
+
+### Example: Range between max and min
+```{r results='hide'}
+## Before
+max(gapminder$lifeExp) - min(gapminder$lifeExp)
+diff(range(gapminder$lifeExp))
+
+## After
+max_minus_min <- function(x){
+  return(max(x) - min(x))
+}
+
+max_minus_min(gapminder$lifeExp)
+```
+
+- Should check function to see if it works
+```{r}
+max_minus_min(1:10)
+
+max_minus_min(runif(100)) #random number from 0 to 1 .. should be close to 1
+```
+
+- Better to make errors more readable
+    - use assertion/runtime assertion
+    - checked against expectation/claim
+
+```{r error=TRUE}
+max_minus_min(gapminder$continent)
+
+max_minus_min <- function(x){
+  if (!is.numeric(x)) {
+    stop("Sorry, but function only works for numeric input.\n",
+         "You have provided an object of class: ",
+         class(x))
+  }
+  max(x) - min(x)
+}
+
+max_minus_min(gapminder$continent)
+
+## or, to be more concise ...
+mmm <- function(x){
+  stopifnot(is.numeric(x))  
+  max(x) - min(x)
+}
+```
+
+### Resources
+> Packages for runtime assertions (the last 3 seem to be under more active development than assertthat):
+> 
+> - `assertthat` on CRAN and GitHub the Hadleyverse option
+> - `ensurer` on CRAN and GitHub general purpose, pipe-friendly
+> - `assertr` on CRAN and GitHub explicitly data pipeline oriented
+> - `assertive` on CRAN and Bitbucket rich set of built-in functions
+> 
+> Hadley Wickham’s book Advanced R
+
+
+### Example: quantiles
+
+```{r}
+quantile(gapminder$lifeExp)
+the_quantiles <- quantile(gapminder$lifeExp, probs=c(0.25, 0.75))
+max(the_quantiles) - min(the_quantiles)
+IQR(gapminder$lifeExp)
+```
+
+The function:
+```{r}
+qdiff1 <- function(x, probs) {
+  stopifnot(is.numeric(x))
+  the_quantiles <- quantile(x, probs=probs)
+  max(the_quantiles) - min(the_quantiles)
+}
+qdiff1(gapminder$lifeExp, c(0.25, 0.75))
+```
+- use arguments which make sense

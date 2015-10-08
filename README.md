@@ -18,6 +18,7 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-09-29_cm007: dplyr](classnotes/2015-09-29-cm007-dplyr.md)
 - [2015-10-01_cm008: dplyr part2](classnotes/2015-10-01-dplyr-p2.md)
 - [2015-10-06_cm009: data structures](classnotes/2015-10-06-data-structures.md)
+- [2015-10-08_cm010: functions](classnotes/2015-10-08-cm010-functions.Rmd)
 
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
