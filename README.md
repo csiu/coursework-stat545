@@ -16,8 +16,8 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-09-22_cm005: ggplot2](classnotes/2015-09-22-cm005-ggplot2.md)
 - [2015-09-23_cm006: rmd](classnotes/2015-09-24-cm006-rmd.md)
 - [2015-09-29_cm007: dplyr](classnotes/2015-09-29-cm007-dplyr.md)
-- [2015-10-01_cm008: dplyr part2](classnotes/2015-10-01-dplyr-p2.md)
-- [2015-10-06_cm009: data structures](classnotes/2015-10-06-data-structures.md)
+- [2015-10-01_cm008: dplyr part2](classnotes/2015-10-01-cm008-dplyr-p2.md)
+- [2015-10-06_cm009: data structures](classnotes/2015-10-06-com009-data-structures.md)
 - [2015-10-08_cm010: functions](classnotes/2015-10-08-cm010-functions.Rmd)
 
 ## Homework
