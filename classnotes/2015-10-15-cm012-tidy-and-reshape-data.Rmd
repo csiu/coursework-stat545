@@ -1,0 +1,74 @@
+---
+title: "tidy data & reshape"
+author: "csiu"
+date: "October 15, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+
+- [lecture outline](http://stat545-ubc.github.io/cm012_tidy-data-factors.html)
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+```
+
+- [examples of good peer reviews and homework](https://github.com/STAT545-UBC/2015_pvt-to-students-and-staff)
+
+### Pass arguments as strings
+- `aes_string()` ... allows you to pass string in
+- `summarise(mtcars, mean(mpg))` is the same as `summarise_(mtcars, "mean(mpg)")` -- not the underscore
+
+--- 
+
+## Tidying data
+### The dataset
+- `EDAWR` - r packages with all of the data sets that will be used today
+```{r}
+# install.packages("devtools")
+# devtools::install_github("rstudio/EDAWR")
+
+library(EDAWR)
+?storms
+?cases
+?pollution
+```
+
+### The package
+- `tidyr` (package for tidying data) is a subset of `reshape2`
+
+```{r}
+library(tidyr)
+```
+
+- `tidyr::gather()` - need to specify KEY and VALUE variable
+- `tidyr::spread()` 
+    - specify which is the KEY variable ... destined to be new column names 
+    - specify which is the VALUE variable ... destined to be values
+
+### Example of `gather()`
+```{r}
+cases
+cases %>% gather(year, n, -country)
+gather(cases, "year", "n", 2:4) ##2:4 <- which columns you want to stack up
+gather(cases, "year", "n", one_of("2011", "2012", "2013"))
+```
+
+### Example of `spread()`
+```{r}
+pollution
+
+spread(pollution, "size", "amount")
+```
+
+### Other handy functions: `separate()` and `unite()`
+- `tidyr::separate()`
+```{r}
+storms
+(storms2 <- separate(storms, date, c("year", "month", "day"), sep="-"))
+```
+
+- `tidyr::unite()`
+```{r}
+unite(storms2, date, year, month, day, sep="-")
+```
