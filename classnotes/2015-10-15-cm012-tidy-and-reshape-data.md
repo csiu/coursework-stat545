@@ -11,6 +11,7 @@ suppressPackageStartupMessages(library(dplyr))
 
 - [examples of good peer reviews and homework](https://github.com/STAT545-UBC/2015_pvt-to-students-and-staff)
 
+- [Be the boss of your factors](http://stat545-ubc.github.io/block014_factors.html)
 ### Pass arguments as strings
 - `aes_string()` ... allows you to pass string in
 - `summarise(mtcars, mean(mpg))` is the same as `summarise_(mtcars, "mean(mpg)")` -- not the underscore
@@ -190,3 +191,12 @@ unite(storms2, date, year, month, day, sep="-")
 ## 5  Arlene    50     1010 1999-06-11
 ## 6  Arthur    45     1010 1996-06-17
 ```
+
+----
+## Factor level order 
+- [factor management](http://stat545-ubc.github.io/block014_factors.html)
+    - `droplevels()` to drop unused factor levels
+    - `reorder()` to reorder factor levels
+    - `revalue()`
+    - growing a factor
+    - creating a factor from scratch: `factor()`
