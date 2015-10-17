@@ -81,10 +81,10 @@ tidy(fit) %>% kable()
 
 
 
-term               estimate   std.error   statistic   p.value
-------------  -------------  ----------  ----------  --------
-(Intercept)    -358.3488923   8.2521323   -43.42501         0
-year              0.2188692   0.0041686    52.50378         0
+|term        |     estimate| std.error| statistic| p.value|
+|:-----------|------------:|---------:|---------:|-------:|
+|(Intercept) | -358.3488923| 8.2521323| -43.42501|       0|
+|year        |    0.2188692| 0.0041686|  52.50378|       0|
 
 Here we see that the intercept ($b$ -- representing the life expectancy at year 0) is equal to -358.3488923 and the slope ($m$ -- representing the rate of change of life expectancy to year) is equal to 0.2188692. A negative slope represents a trend of decreasing life expectancy while a positive slope indicates a trend of growing life expectancy over time.
 
@@ -133,7 +133,7 @@ dat %>%
     )    
 ```
 
-![](hw04-function_files/figure-html/unnamed-chunk-6-1.png) 
+![](figure/hw04-unnamed-chunk-7-1.png) 
 
 Here we see that the actual life expectancy over time fits the predicted life expectancy over time pretty well. To quantify this fit -- i.e. the error between the actual (black) and predicted (red) life expectancy -- we take a look at the residual which is calculated by taking the difference between the actual and predicted result ($y - \hat{y}$ -- this can also be calculated by the `residuals()` function in R).
 
@@ -151,20 +151,20 @@ data.frame(year = dat$year,
 
 
 
- year   actual_lifeExp   predicted_lifeExp   calculated_by_hand   calculatd_by_Rfunction   diff_between_calculations
------  ---------------  ------------------  -------------------  -----------------------  --------------------------
- 1952           68.750            68.88385           -0.1338462               -0.1338462                           0
- 1957           69.960            69.97819           -0.0181923               -0.0181923                           0
- 1962           71.300            71.07254            0.2274615                0.2274615                           0
- 1967           72.130            72.16688           -0.0368846               -0.0368846                           0
- 1972           72.880            73.26123           -0.3812308               -0.3812308                           0
- 1977           74.210            74.35558           -0.1455769               -0.1455769                           0
- 1982           75.760            75.44992            0.3100769                0.3100769                           0
- 1987           76.860            76.54427            0.3157308                0.3157308                           0
- 1992           77.950            77.63862            0.3113846                0.3113846                           0
- 1997           78.610            78.73296           -0.1229615               -0.1229615                           0
- 2002           79.770            79.82731           -0.0573077               -0.0573077                           0
- 2007           80.653            80.92165           -0.2686538               -0.2686538                           0
+| year| actual_lifeExp| predicted_lifeExp| calculated_by_hand| calculatd_by_Rfunction| diff_between_calculations|
+|----:|--------------:|-----------------:|------------------:|----------------------:|-------------------------:|
+| 1952|         68.750|          68.88385|         -0.1338462|             -0.1338462|                         0|
+| 1957|         69.960|          69.97819|         -0.0181923|             -0.0181923|                         0|
+| 1962|         71.300|          71.07254|          0.2274615|              0.2274615|                         0|
+| 1967|         72.130|          72.16688|         -0.0368846|             -0.0368846|                         0|
+| 1972|         72.880|          73.26123|         -0.3812308|             -0.3812308|                         0|
+| 1977|         74.210|          74.35558|         -0.1455769|             -0.1455769|                         0|
+| 1982|         75.760|          75.44992|          0.3100769|              0.3100769|                         0|
+| 1987|         76.860|          76.54427|          0.3157308|              0.3157308|                         0|
+| 1992|         77.950|          77.63862|          0.3113846|              0.3113846|                         0|
+| 1997|         78.610|          78.73296|         -0.1229615|             -0.1229615|                         0|
+| 2002|         79.770|          79.82731|         -0.0573077|             -0.0573077|                         0|
+| 2007|         80.653|          80.92165|         -0.2686538|             -0.2686538|                         0|
 
 To calculate the total error between the actual and predicted values, we will add up the residuals... but first we will square the values so that we are not adding negatives.
 
@@ -260,7 +260,7 @@ Make sure function works with Canada:
 plotfig(filter(gapminder, country == "Canada"))
 ```
 
-![](hw04-function_files/figure-html/unnamed-chunk-12-1.png) 
+![](figure/hw04-unnamed-chunk-13-1.png) 
 
 Here I added `RSS: #` to refer to the fit error a.k.a residual sum of squares.
 
@@ -271,7 +271,7 @@ plotfig(filter(gapminder, country == "Kuwait"),
         x = "year", y="pop")
 ```
 
-![](hw04-function_files/figure-html/unnamed-chunk-13-1.png) 
+![](figure/hw04-unnamed-chunk-14-1.png) 
 
 The RSS values between the two plots are on different scales because the y-axes are different.
 
@@ -291,14 +291,14 @@ dat2 %>% head() %>% kable()
 
 
 
-country       intercept        slope   fit_error
-----------  -----------  -----------  ----------
-Zimbabwe      236.79819   -0.0930210    519.1823
-Swaziland    -139.19820    0.0950748    441.4395
-Rwanda        132.20498   -0.0458315    430.1090
-Botswana      -65.49586    0.0606685    373.5871
-Lesotho      -139.16529    0.0955657    352.1157
-Cambodia     -735.78684    0.3959028    316.9851
+|country   |  intercept|      slope| fit_error|
+|:---------|----------:|----------:|---------:|
+|Zimbabwe  |  236.79819| -0.0930210|  519.1823|
+|Swaziland | -139.19820|  0.0950748|  441.4395|
+|Rwanda    |  132.20498| -0.0458315|  430.1090|
+|Botswana  |  -65.49586|  0.0606685|  373.5871|
+|Lesotho   | -139.16529|  0.0955657|  352.1157|
+|Cambodia  | -735.78684|  0.3959028|  316.9851|
 
 Here we see that Zimbabwe is the country with the worst linear fit (followed by Swaziland, Rwanda, Botswana, and Lesotho). Plotting this, we can see that indeed this is true!
 
@@ -312,7 +312,7 @@ gapminder %>%
   .$figs
 ```
 
-![](hw04-function_files/figure-html/unnamed-chunk-15-1.png) ![](hw04-function_files/figure-html/unnamed-chunk-15-2.png) ![](hw04-function_files/figure-html/unnamed-chunk-15-3.png) ![](hw04-function_files/figure-html/unnamed-chunk-15-4.png) ![](hw04-function_files/figure-html/unnamed-chunk-15-5.png) 
+![](figure/hw04-unnamed-chunk-16-1.png) ![](figure/hw04-unnamed-chunk-16-2.png) ![](figure/hw04-unnamed-chunk-16-3.png) ![](figure/hw04-unnamed-chunk-16-4.png) ![](figure/hw04-unnamed-chunk-16-5.png) 
 
 ### Category: gdpPercap vs year
 Another analysis I think would be cool is to identify the countries with the worst economies. I approximate this by using a linear model and finding countries with the greatest negative slopes.
@@ -330,14 +330,14 @@ dat3 %>% head() %>% kable()
 
 
 
-country        intercept         slope      fit_error
------------  -----------  ------------  -------------
-Kuwait        3200775.44   -1583.95682   3658607004.9
-Iraq           104085.55     -48.63538    181015507.6
-Nicaragua       61686.65     -29.43268      8906169.8
-Angola          49633.36     -23.25146     13019804.1
-Djibouti        42576.87     -20.14601      1741848.1
-Madagascar      29324.00     -14.13913       280574.9
+|country    |  intercept|       slope|    fit_error|
+|:----------|----------:|-----------:|------------:|
+|Kuwait     | 3200775.44| -1583.95682| 3658607004.9|
+|Iraq       |  104085.55|   -48.63538|  181015507.6|
+|Nicaragua  |   61686.65|   -29.43268|    8906169.8|
+|Angola     |   49633.36|   -23.25146|   13019804.1|
+|Djibouti   |   42576.87|   -20.14601|    1741848.1|
+|Madagascar |   29324.00|   -14.13913|     280574.9|
 
 Below shows the top 5 (as approximated by our statistic) worst economies:
 
@@ -355,7 +355,7 @@ gapminder %>%
   .$figs
 ```
 
-![](hw04-function_files/figure-html/unnamed-chunk-17-1.png) ![](hw04-function_files/figure-html/unnamed-chunk-17-2.png) ![](hw04-function_files/figure-html/unnamed-chunk-17-3.png) ![](hw04-function_files/figure-html/unnamed-chunk-17-4.png) ![](hw04-function_files/figure-html/unnamed-chunk-17-5.png) 
+![](figure/hw04-unnamed-chunk-18-1.png) ![](figure/hw04-unnamed-chunk-18-2.png) ![](figure/hw04-unnamed-chunk-18-3.png) ![](figure/hw04-unnamed-chunk-18-4.png) ![](figure/hw04-unnamed-chunk-18-5.png) 
 
 On the other hand, here are the top economies:
 
@@ -371,14 +371,14 @@ dat4 %>% head() %>% kable()
 
 
 
-country             intercept      slope   fit_error
------------------  ----------  ---------  ----------
-Singapore            -1552823   793.2548   201108467
-Norway               -1430487   736.1628    44215422
-Hong Kong, China     -1284608   657.1543    95337658
-Ireland              -1141026   584.3825   252484071
-Japan                -1086260   557.7221    17127517
-Austria              -1037774   534.5723     3850051
+|country          | intercept|    slope| fit_error|
+|:----------------|---------:|--------:|---------:|
+|Singapore        |  -1552823| 793.2548| 201108467|
+|Norway           |  -1430487| 736.1628|  44215422|
+|Hong Kong, China |  -1284608| 657.1543|  95337658|
+|Ireland          |  -1141026| 584.3825| 252484071|
+|Japan            |  -1086260| 557.7221|  17127517|
+|Austria          |  -1037774| 534.5723|   3850051|
 
 
 ```r
@@ -395,7 +395,7 @@ gapminder %>%
   .$figs
 ```
 
-![](hw04-function_files/figure-html/unnamed-chunk-19-1.png) ![](hw04-function_files/figure-html/unnamed-chunk-19-2.png) ![](hw04-function_files/figure-html/unnamed-chunk-19-3.png) ![](hw04-function_files/figure-html/unnamed-chunk-19-4.png) ![](hw04-function_files/figure-html/unnamed-chunk-19-5.png) 
+![](figure/hw04-unnamed-chunk-20-1.png) ![](figure/hw04-unnamed-chunk-20-2.png) ![](figure/hw04-unnamed-chunk-20-3.png) ![](figure/hw04-unnamed-chunk-20-4.png) ![](figure/hw04-unnamed-chunk-20-5.png) 
 
 ## Reflection
 This assignment was trickier -- in particular the `group_by() ... do() ...` portion where what you are "do"-ing is trying to plot a figure in some particular order e.g.
