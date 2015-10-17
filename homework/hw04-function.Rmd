@@ -1,0 +1,296 @@
+---
+title: "hw04: split-apply-combine with functions"
+author: "csiu"
+date: "October 12, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+
+- Link to [Homework 04](http://stat545-ubc.github.io/hw04_write-function-split-apply-combine.html)
+
+## Goal
+
+- to write one (or more) custom functions
+- to use `dplyr::do()` to apply to all such pieces. 
+- to use `dplyr()` and or `ggplot2` to explore what you got back
+
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+library(ggplot2)
+library(knitr)
+library(broom)
+
+library(gapminder)
+```
+
+----
+
+> Write a function to compute something interesting on a piece of the Gapminder data
+
+----
+
+## The task
+I think it would be interesting to identify countries whose life expectancy is not changing at a constant rate (i.e. countries whose life expectancy would not be properly fitted by a linear model). This would then in theory reveal intersting stories about a country's past.
+
+To do this in accordance with the goals set up by this assignment -- i.e. write functions -- I will first need some working code. To develop this code, I will test on 1 country i.e. "Canada".
+
+```{r}
+(dat <- gapminder %>% 
+  filter(country == "Canada") %>% 
+  arrange(year))
+```
+
+To fit a linear model of $y = mx + b$ of year vs life expectancy, we use the `lm()` function.
+
+```{r results='hold'}
+(fit <- lm(lifeExp ~ year, dat))
+
+b <- coef(fit)[1] #intersect
+m <- coef(fit)[2] #slope
+```
+
+```{r}
+tidy(fit) %>% kable()
+```
+
+Here we see that the intercept ($b$ -- representing the life expectancy at year 0) is equal to `r b` and the slope ($m$ -- representing the rate of change of life expectancy to year) is equal to `r m`. A negative slope represents a trend of decreasing life expectancy while a positive slope indicates a trend of growing life expectancy over time.
+
+Using the linear model, the predicted life expectancy of given year from 1952 to 2007 is given in the following:
+
+```{r}
+(y_hat <- data.frame(year = dat$year,
+                     predicted_lifeExp = m * dat$year + b))
+```
+
+Plotting the actual life expectancy (black) and the predicted life expectancy (red) looks like:
+
+```{r}
+dat %>% 
+  ggplot(aes(x=year, y=lifeExp)) +
+    geom_abline(intercept = coef(fit)[1],
+                slope = coef(fit)[2],
+                color = "red") +
+    geom_point(data=y_hat, aes(y=predicted_lifeExp), color="red", size=3, shape=1) +
+    geom_point(size=3) +
+    geom_line(alpha=0.6) + 
+    scale_x_continuous(breaks = dat$year) +
+    theme_minimal() +
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.y = element_line(linetype = "dotted"),
+      axis.title = element_text(size=14, face="bold")
+    )    
+```
+
+Here we see that the actual life expectancy over time fits the predicted life expectancy over time pretty well. To quantify this fit -- i.e. the error between the actual (black) and predicted (red) life expectancy -- we take a look at the residual which is calculated by taking the difference between the actual and predicted result ($y - \hat{y}$ -- this can also be calculated by the `residuals()` function in R).
+
+```{r}
+## calculating 'y - y_hat' is the same as the 'residuals' R function
+data.frame(year = dat$year,
+           actual_lifeExp = dat$lifeExp,
+           predicted_lifeExp = y_hat$predicted_lifeExp,
+           calculated_by_hand = dat$lifeExp - y_hat$predicted_lifeExp,
+           calculatd_by_Rfunction = residuals(fit),
+           diff_between_calculations = (dat$lifeExp - y_hat$predicted_lifeExp) - residuals(fit)) %>% 
+    kable()
+```
+
+To calculate the total error between the actual and predicted values, we will add up the residuals... but first we will square the values so that we are not adding negatives.
+
+```{r}
+fit_err <- sum(residuals(fit)^2)
+```
+
+The fit error of life expectancy of Canada is `r fit_err`. This value is relatively low which means the life expectancy of Canada through the years is fitted pretty well by a linear model. On the other hand, for countries where life expectancy is changing drastically (i.e. not fitted by a linear model), we expect the fit error to be higher. 
+
+This type of analysis is called [**Linear least squares**](https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)).
+
+## Generalizing with functions
+
+Now that we have the code we want to use predetermined, we shall create functions.
+
+### Function #1: finding the slope, intercept, and fit error
+The function:
+```{r}
+## Function to determine the slope, intercept, and fit error
+lm_intercept_slope <- function(dat, f="lifeExp ~ year"){
+  fit <- lm(as.formula(f), dat)
+  setNames(data.frame(t(coef(fit)),
+                      sum(residuals(fit)^2)
+                      ), 
+           c("intercept", "slope", "fit_error"))
+}
+```
+
+Make sure function works with Canada:
+```{r}
+## Example: only Canada
+lm_intercept_slope(filter(gapminder, country == "Canada"))
+```
+Because the value of this function given the input matches the value predetermined, we know that this function properly works.
+
+---- 
+
+### Function #2: creating the plot
+```{r}
+## Function to plot
+plotfig <- function(dat, x="year", y="lifeExp") {
+  fit <- lm(dat[[y]] ~ dat[[x]])
+  b <- coef(fit)[1]
+  m <- coef(fit)[2]
+  
+  fit_err <- sum(residuals(fit)^2)
+  
+  y_hat <- data.frame(x = dat[[x]],
+                      predicted_y = m * dat[[x]] + b)
+    
+  ggplot(dat) +
+    aes_string(x=x, y=y) +
+    geom_abline(intercept = b, slope = m,
+                color = "red") +
+    geom_point(data=y_hat, aes(x=x, y=predicted_y), 
+               color="red", size=3, shape=1) +
+    geom_point(size=3) +
+    geom_line(alpha=0.6) +
+    scale_x_continuous(breaks = dat[[x]]) +
+    theme_minimal() +
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.y = element_line(linetype = "dotted"),
+      axis.title = element_text(size=14, face="bold")
+    ) +
+    annotate("text", 
+             label=sprintf('country: %s\nRSS: %s', 
+                           dat[["country"]][1], round(fit_err, 4)), #assume country is defined
+             x=min(dat[[x]]), 
+             y=max(dat[[y]]), 
+             hjust=0,
+             vjust=1,
+             alpha=0.4,
+             fontface="bold",
+             family="Courier",
+             size=5
+             )
+}
+```
+
+Make sure function works with Canada:
+```{r}
+plotfig(filter(gapminder, country == "Canada"))
+```
+
+Here I added `RSS: #` to refer to the fit error a.k.a residual sum of squares.
+
+Furthermore, because I generalized the plotting function, I can arbitrarily plot `pop` by `year` of `Kuwait`:
+```{r}
+plotfig(filter(gapminder, country == "Kuwait"), 
+        x = "year", y="pop")
+```
+
+The RSS values between the two plots are on different scales because the y-axes are different.
+
+## Exploration 
+### Category: life expectancy vs year
+I can now call my `lm_intercept_slope()` function for all countries using `group_by() ... do() ...`
+```{r}
+dat2 <- gapminder %>% 
+  group_by(country) %>% 
+  do(lm_intercept_slope(., "lifeExp ~ year")) %>% 
+  ungroup() %>% 
+  arrange(desc(fit_error))
+
+dat2 %>% head() %>% kable()
+```
+
+Here we see that Zimbabwe is the country with the worst linear fit (followed by Swaziland, Rwanda, Botswana, and Lesotho). Plotting this, we can see that indeed this is true!
+
+```{r results='hide'}
+gapminder %>% 
+  filter(country %in% as.character(head(dat2, 5)[["country"]])) %>% 
+  group_by(country) %>% 
+  do(figs = plotfig(., x="year", y="lifeExp")) %>% 
+  .[match(dat2[["country"]], .$country),] %>% 
+  .$figs
+```
+
+### Category: gdpPercap vs year
+Another analysis I think would be cool is to identify the countries with the worst economies. I approximate this by using a linear model and finding countries with the greatest negative slopes.
+
+```{r}
+dat3 <- gapminder %>% 
+  group_by(country) %>% 
+  do(lm_intercept_slope(., "gdpPercap ~ year")) %>% 
+  ungroup() %>% 
+  arrange(slope)
+
+dat3 %>% head() %>% kable()
+```
+
+Below shows the top 5 (as approximated by our statistic) worst economies:
+```{r results='hide'}
+gapminder %>% 
+  filter(country %in% as.character(head(dat3, 5)[["country"]])) %>% 
+  group_by(country) %>% 
+  do(figs = plotfig(., x="year", y="gdpPercap") +
+       theme(#axis.text.x = element_text(angle=90, hjust=1, vjust=0.5),
+             panel.background = element_rect(fill = "#B7E2F0"),
+             panel.grid.major = element_line(color = "white")
+             )
+     ) %>% 
+  .[match(dat3[["country"]], .$country),] %>% 
+  .$figs
+```
+
+On the other hand, here are the top economies:
+```{r}
+dat4 <- gapminder %>% 
+  group_by(country) %>% 
+  do(lm_intercept_slope(., "gdpPercap ~ year")) %>% 
+  ungroup() %>% 
+  arrange(desc(slope))
+
+dat4 %>% head() %>% kable()
+```
+
+```{r results='hide'}
+gapminder %>% 
+  filter(country %in% as.character(head(dat4, 5)[["country"]])) %>% 
+  group_by(country) %>% 
+  do(figs = plotfig(., x="year", y="gdpPercap") +
+       theme(#axis.text.x = element_text(angle=90, hjust=1, vjust=0.5),
+             panel.background = element_rect(fill = "#d9ead4"),
+             panel.grid.major = element_line(color = "white")
+             )
+     ) %>% 
+  .[match(dat4[["country"]], .$country),] %>% 
+  .$figs
+```
+
+## Reflection
+This assignment was trickier -- in particular the `group_by() ... do() ...` portion where what you are "do"-ing is trying to plot a figure in some particular order e.g.
+
+```{r results='hide', fig.show='hide'}
+## NOTE: dat4 = countries ordered by some statistic
+
+## PART1) Normal stuff:
+gapminder %>% 
+  filter(country %in% as.character(head(dat4, 5)[["country"]])) %>% # <-- Keep only the top5 countries
+  group_by(country) %>% 
+  
+  ## PART2) for each group, plot:
+  do(figs = plotfig(., x="year", y="gdpPercap") + # <-- using the "plotfig()" function
+       ## add some additional ggplot goodness to change theme:
+       theme(panel.background = element_rect(fill = "#d9ead4"), 
+             panel.grid.major = element_line(color = "white")
+             )
+     ) %>% 
+  
+  ## PART3) order countries in accordance to country order of dat4:
+  .[match(dat4[["country"]], .$country),] %>% 
+  
+  ## PART4) access the plots in the dataframe:
+  .$figs
+```
+
+The non `dplyr`-ness of the above is PART3... is there a way to `arrange` (or order) the rows of the data.frame by another vector?
