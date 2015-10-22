@@ -2,6 +2,10 @@
 csiu  
 October 20, 2015  
 
+```r
+knitr::opts_chunk$set(fig.path='figure/cm013-')
+```
+
 - [lecture outline](http://stat545-ubc.github.io/cm013_practical-figure-making.html)
 
 - [Do’s and Don’ts for Effective Graphs](http://stat545-ubc.github.io/block015_graph-dos-donts.html)
@@ -37,7 +41,7 @@ library(RColorBrewer)
 display.brewer.all()
 ```
 
-![](2015-10-20-cm013-graphing-tips_files/figure-html/unnamed-chunk-2-1.png) 
+![](figure/cm013-palette-RColorBrewer-1.png) 
 
 - sequential palette: 
     - p-value
@@ -81,7 +85,7 @@ pal(dichromat(colorschemes$Categorical.12, "protan"),
   main = "Categorical (12) -- protanopia")
 ```
 
-![](2015-10-20-cm013-graphing-tips_files/figure-html/unnamed-chunk-3-1.png) 
+![](figure/cm013-palette-dichromat-1.png) 
 
 ```r
 par(opar)
@@ -112,7 +116,7 @@ q <-
 q + geom_point(aes(size = pop), pch = 21)
 ```
 
-![](2015-10-20-cm013-graphing-tips_files/figure-html/unnamed-chunk-4-1.png) 
+![](figure/cm013-unnamed-chunk-3-1.png) 
 
 ```r
 (r <- q +
@@ -121,14 +125,14 @@ q + geom_point(aes(size = pop), pch = 21)
    theme(legend.position="none"))
 ```
 
-![](2015-10-20-cm013-graphing-tips_files/figure-html/unnamed-chunk-4-2.png) 
+![](figure/cm013-unnamed-chunk-3-2.png) 
 
 ```r
 r + facet_wrap(~ continent) + ylim(c(39, 87)) + 
   aes(fill = country) + scale_fill_manual(values = country_colors)
 ```
 
-![](2015-10-20-cm013-graphing-tips_files/figure-html/unnamed-chunk-4-3.png) 
+![](figure/cm013-unnamed-chunk-3-3.png) 
 
 Putting things together
 
@@ -144,16 +148,18 @@ jdat %>%
   scale_size_continuous(range = c(1,40)) + ylim(c(39, 87))
 ```
 
-![](2015-10-20-cm013-graphing-tips_files/figure-html/unnamed-chunk-5-1.png) 
+![](figure/cm013-unnamed-chunk-4-1.png) 
 
 ## [Writing figures to file](http://stat545-ubc.github.io/block017_write-figure-to-file.html)
 - Graphics devices: **vector** vs **raster**
 - Write figures to file with `ggsave()`
     - `ggsave("fig-io-practice.png", p)`
     - `ggsave("img/fig-io-practice-scale-2.png", p2, scale = 2)`
-
+- Chunk name determines figure file name
 
 ## [Multiple plots on a page](http://stat545-ubc.github.io/block020_multiple-plots-on-a-page.html)
+- `arrangeGrob()`
+- `multiplot()`
 - Use the `cowplot` package
 
 ## Summary

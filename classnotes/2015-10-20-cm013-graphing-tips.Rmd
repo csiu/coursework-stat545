@@ -6,6 +6,9 @@ output:
     html_document:
         keep_md: yes
 ---
+```{r}
+knitr::opts_chunk$set(fig.path='figure/cm013-')
+```
 
 - [lecture outline](http://stat545-ubc.github.io/cm013_practical-figure-making.html)
 
@@ -28,7 +31,7 @@ palette()
 - R recognizes `r length(colors())` `colors()`
 
 - **Cynthia Brewer**: a geographer and color specialist (library: `RColorBrewer`)
-```{r fig.height=7}
+```{r palette-RColorBrewer, fig.height=7}
 library(RColorBrewer)
 
 ## look at all palettes
@@ -55,7 +58,7 @@ display.brewer.all()
 
 - [Why Should Engineers and Scientists Be Worried About Color?](http://www.research.ibm.com/people/l/lloydt/color/color.HTM) -- rainbow palette is awful
 
-```{r}
+```{r palette-dichromat}
 library(dichromat)
 
 pal <- function(col, ...)
