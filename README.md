@@ -21,6 +21,7 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-10-08_cm010: functions](classnotes/2015-10-08-cm010-functions.md)
 - [2015-10-10_cm011: split-apply-combine](classnotes/2015-10-13-cm011-split-apply-combine.md)
 - [2015-10-15-cm012: tidyr to reshape data](classnotes/2015-10-15-cm012-tidy-and-reshape-data.md)
+- [2015-10-20-cm013: graphing tips](classnotes/2015-10-20-cm013-graphing-tips.md)
 
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
