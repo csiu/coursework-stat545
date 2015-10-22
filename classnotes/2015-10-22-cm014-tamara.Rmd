@@ -1,0 +1,188 @@
+---
+title: "Guest lecture: Tamara Munzner/Visualization Analysis & Design"
+author: "csiu"
+date: "October 22, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+
+- [lecture outline](http://www.cs.ubc.ca/~tmm/talks/minicourse14/vad15bryan.pdf)
+
+----
+
+## Introduction
+- Data visualization
+
+    > computer-based visualization systems provide visual representations of **datasets** intended to help **people** carry out some task more effectively
+
+- Why have a human in the loop?
+
+- visual representation
+    - can use cognition for something else
+    
+    > replace cognitive act with perceptual act
+
+- Why represent all the data? 
+    - Why not use summary statistics? Lose of information
+    - Anscombe's Quartet (identical statistics but different distribution)
+ 
+## 4 levels of data visualization
+
+- How to look at things? 4 Levels
+    - **Domain** - target users?
+    - **Abstraction** - translate of domain to vocab of vis
+        - what: data abstraction
+        - why: task abstraction
+    - **Idiom**
+        - how: visual encoding idiom, interaction idiom
+    - **Algorithm** - efficient algorithm
+
+- Why is validation difficult? different ways to get it wrong at each level
+
+## Data types
+- Types: Datasets and data
+    - Tables of data
+    - Network (have links)
+    - Spatial data
+
+## What and Why
+### Action
+- **Analyze**
+    - Consume
+
+        > Discover vs Present vs Enjoy
+
+    - Produce
+        - Annotate vs Record vs Derive (e.g. plot difference)
+    - tree -> **derive** -> summarize topological structure
+- **Search, query**
+    - Search: lookup, browse, locate, explore
+        - target known vs unknown
+        - location known vs unknown
+    - query: identify vs compare vs summarize
+
+### Targets
+- All data: trends vs outliers vs features 
+- Network data: Topology: Paths
+- Spatial data: Shape
+- Attributes: One vs Many
+
+## How do we show data?
+### Visual encoding
+
+> Marks vs Channels
+
+- marks (geometry) vs channel (appearance)
+- pick channel based on data (categorical vs continuous)
+    - some channels show intrinsic order (e.g. position, size)
+    - **expressiveness** matching (ordered vs unordered)
+    - **effectiveness** principle - some channels we understand easier/judge more accurately
+
+- When combine channels:
+
+    > Separability vs Integrality 
+
+Grouping
+
+- Many ways to spacially arrange data
+    - Arrange tables in space
+
+- Idioms: dot chart, line chart
+    - line chart = emphasis on trend
+- Idioms: glyphmaps
+    - rectilinear vs Radial (patterns are separate)
+- Idioms: heatmap 
+    - have 2 keys
+    - tradeoff = scalabilty vs readability of color saturation levels
+- Idioms: cluster heatmap
+    - dendrogram
+
+Arrange spatial data
+
+- choropleth map
+    - pitfall: correlation via population density (where people live not data)
+- Idiom: topographic map
+    - derive data from heights
+- Idiom: isosurfaces, direct volumne rendering
+    - surfaces of equal value
+- Idiom: similarity-clustered streamlines
+    - flow data
+    - 3D vector field
+    - metrics for line e.g. curveyness of line
+    - sinks vs sources vs sadle points
+
+Network data
+
+- Idiom: force-directed placement
+    - spring system
+    - can treat as optimization problem 
+    - hairball -- not able to understand data
+- Idiom: ajaccency matrix view
+    - transform from force-directed graph
+    - tradeoff:
+        - scalability: less of hairball
+        - trickier to understand structure
+- Idiom: radial node-link tree
+    - alternate to tree
+    - good for showing topological structure of tree
+- Idiom: treemap
+    - use of containment to show leafs
+    - hard to show topological structure
+    - more scalable
+
+### Color
+
+> Color: Luminance, saturation, hue
+
+- luminance:
+- saturation: magnitude, purity/muddiness
+- hue: which color e.g. blue vs red
+
+- System
+    - RGB: poor for encoding
+    - HSL: better, but beware (lightness ≠ luminance)
+
+- Categorical color: Discriminability constraints 
+    - noncontiguous small regions of color: only 6-12 bins 
+    (including background color, lines, highlights)
+
+- Ordered color: Rainbow is poor default    
+    - large vs small scale structure
+
+### Ways of handling complexity
+Change over time
+
+- Idiom: Animated transitions
+    - vs jump cut
+
+Facet (side by side comparison)
+
+- can have same/different computing/view
+
+- Idiom: Linked highlighting
+- Idiom: bird's-eye maps
+    - System: Google map
+- Idiom: small multiples
+    - ggplot ... disjoint data
+
+- Overview vs Detail
+- benefits: eyes vs memory
+- partition into views
+    - Partitioning: List alignment
+    - Partitioning: Recursive subdivision
+        - depends on order of partition
+        - different questions
+
+### Filtering data: reducing what is shown
+- items or attributes
+- aggregate 
+
+- Idiom: boxplot
+    - static aggregation
+- Idiom: Dimensionality reduction for documents
+    - cannot show original data directly 
+        
+## Resources
+- [Visualization Analysis & Design](http://www.cs.ubc.ca/~tmm/vadbook)
+- [Visualization Principles (VIZBI 2011)](https://www.cs.ubc.ca/~tmm/talks/vizbi11/vizbi11.pdf)

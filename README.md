@@ -20,8 +20,9 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-10-06_cm009: data structures](classnotes/2015-10-06-cm009-data-structures.md)
 - [2015-10-08_cm010: functions](classnotes/2015-10-08-cm010-functions.md)
 - [2015-10-10_cm011: split-apply-combine](classnotes/2015-10-13-cm011-split-apply-combine.md)
-- [2015-10-15-cm012: tidyr to reshape data](classnotes/2015-10-15-cm012-tidy-and-reshape-data.md)
-- [2015-10-20-cm013: graphing tips](classnotes/2015-10-20-cm013-graphing-tips.md)
+- [2015-10-15_cm012: tidyr to reshape data](classnotes/2015-10-15-cm012-tidy-and-reshape-data.md)
+- [2015-10-20_cm013: graphing tips](classnotes/2015-10-20-cm013-graphing-tips.md)
+- [2015-10-22_cm014: Guest lecture: Tamara Munzner](classnotes/2015-10-22-cm014-tamara.md)
 
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
