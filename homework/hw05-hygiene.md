@@ -5,6 +5,15 @@ October 26, 2015
 
 - [link to homework](http://stat545-ubc.github.io/hw05_factor-figure-boss-repo-hygiene.html)
 
+
+```r
+library(gapminder)
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(rworldmap))
+library(classInt)
+library(viridis)
+```
+
 ## Factor management
 ## Visualization design
 ## Writing figures to file
@@ -16,6 +25,59 @@ In the first week of lecture (which seems like just yesterday but not and thus i
 In addition, to ignore `*html` and other irrelevant files, I've been ignoring them in git using the [.gitignore](https://github.com/STAT545-UBC/celia_siu/blob/master/.gitignore) file.
 
 ## But I want to do more!
+According to Tamara, for noncontiguous small regions, we can see only 6-12 colors (including background color, lines, highlights).
+
+```r
+## REFERENCE: https://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf
+
+gdat <- gapminder %>% 
+  filter(year==2007)
+
+# gdat %>% 
+#   arrange(desc(lifeExp)) %>% 
+#   knitr::kable()
+
+numCats <- 7
+category <- "lifeExp"
+
+sPDF <- joinCountryData2Map(gdat,
+                            joinCode="NAME",
+                            nameJoinColumn="country",
+                            mapResolution="li",
+                            verbose=TRUE)
+
+#getting class intervals
+classInt <- classIntervals(sPDF[[category]],
+                           n=numCats, style = "jenks")
+catMethod <- classInt[["brks"]]
+
+#getting colours
+colourPalette <- magma(numCats)
+
+#plot map
+#mapDevice() #create world map shaped window
+mapParams <- mapCountryData(sPDF,
+                            nameColumnToPlot=category,
+                            numCats=numCats,
+                            catMethod=catMethod,
+                            colourPalette=colourPalette,
+                            addLegend=FALSE,
+                            mapTitle=sprintf('%s in 2007', category)
+                            )
+
+#adding legend
+do.call(addMapLegend,
+        c(mapParams,
+          legendLabels="all",
+          legendWidth=1,
+          legendIntervals="data",
+          legendMar = 2))
+```
+
+![](figure/hw05-rworldmap-lifeExp2007-1.png) 
+
+
+
 ## Report your progress
 Here is a list of what I learned in STAT545 that I did not know/realized previously:
 
