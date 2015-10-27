@@ -425,3 +425,178 @@ gapminder %>%
 ```
 
 The non `dplyr`-ness of the above is PART3... is there a way to `arrange` (or order) the rows of the data.frame by another vector?
+
+----
+
+----
+
+## Edit.
+
+According to @[roypan](https://github.com/roypan),
+
+> In your function, you used sum of squares of residual (SSres) to determine whether a fitted model is good or not. But in many cases, different data sets have different range and variability. So we may also wish to take into consideration the scaling effect of total sum of squares (SStotal). Therefore, a more common way to determine the goodness of a linear model is to calculate the coefficient of determination / R^2, which is `1 - SSres / SStotal`.
+
+**UPDATE MY FUNCTIONS**
+
+- `fit_error` will be renamed to `SStotal`
+- include @roypan's suggestion of `Rsquared`
+- update plotting to include `SStotal` and `Rsquared` labels
+
+
+```r
+lm_intercept_slope2 <- function(dat, f="lifeExp ~ year"){
+  fit <- lm(as.formula(f), dat)
+  SStotal <- sum(residuals(fit)^2)
+  
+  setNames(data.frame(t(coef(fit)),
+                      SStotal, #sum of squares of residual
+                      #1 - (residuals(fit)^2/SStotal) #Coefficient of determination aka R^2
+                      summary(fit)$r.squared #Coefficient of determination aka R^2
+                      ), 
+           c("intercept", "slope", "SStotal", "Rsquared"))
+}
+
+plotfig2 <- function(dat, x="year", y="lifeExp") {
+  fit <- lm(dat[[y]] ~ dat[[x]])
+  b <- coef(fit)[1]
+  m <- coef(fit)[2]
+  
+  SStotal <- sum(residuals(fit)^2)
+  Rsquared <- summary(fit)$r.squared
+  
+  y_hat <- data.frame(x = dat[[x]],
+                      predicted_y = m * dat[[x]] + b)
+    
+  ggplot(dat) +
+    aes_string(x=x, y=y) +
+    geom_abline(intercept = b, slope = m,
+                color = "red") +
+    geom_point(data=y_hat, aes(x=x, y=predicted_y), 
+               color="red", size=3, shape=1) +
+    geom_point(size=3) +
+    geom_line(alpha=0.6) +
+    scale_x_continuous(breaks = dat[[x]]) +
+    theme_minimal() +
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.y = element_line(linetype = "dotted"),
+      axis.title = element_text(size=14, face="bold")
+    ) +
+    annotate("text", 
+             label=sprintf('country: %s\nR-squared: %s\nSStotal: %s', 
+                           dat[["country"]][1],
+                           round(Rsquared, 4),
+                           round(SStotal, 4)), #assume country is defined
+             x=min(dat[[x]]), 
+             y=max(dat[[y]]), 
+             hjust=0,
+             vjust=1,
+             alpha=0.4,
+             fontface="bold",
+             family="Courier",
+             size=5
+             )
+}
+```
+
+Again, some testing of the functions with "Canada"
+
+
+```r
+lm_intercept_slope2(dat)
+```
+
+```
+##   intercept     slope   SStotal  Rsquared
+## 1 -358.3489 0.2188692 0.6212471 0.9963855
+```
+
+```r
+plotfig2(dat)
+```
+
+![](figure/hw04-unnamed-chunk-23-1.png) 
+
+**APPLICATION/UPDATE FOR: "Category: life expectancy vs year"**
+
+NOTE: Previous result for worst fits were: Zimbabwe, Swaziland, Rwanda, Botswana, and Lesotho.
+
+
+```r
+dat2 <- gapminder %>% 
+  group_by(country) %>% 
+  do(lm_intercept_slope2(., "lifeExp ~ year")) %>% 
+  ungroup() %>% 
+  arrange(Rsquared)
+
+dat2 %>% head() %>% kable()
+```
+
+
+
+|country   |  intercept|      slope|  SStotal|  Rsquared|
+|:---------|----------:|----------:|--------:|---------:|
+|Rwanda    |  132.20498| -0.0458315| 430.1090| 0.0171596|
+|Botswana  |  -65.49586|  0.0606685| 373.5871| 0.0340234|
+|Zimbabwe  |  236.79819| -0.0930210| 519.1823| 0.0562320|
+|Zambia    |  165.60797| -0.0604252| 205.0924| 0.0598364|
+|Swaziland | -139.19820|  0.0950748| 441.4395| 0.0682109|
+|Lesotho   | -139.16529|  0.0955657| 352.1157| 0.0848564|
+
+It's interesting to see here that Rwanda made top of this worst linear fits list (likely due to the major decline in life expectancy in 1992 from the [Rwandan Genocide](https://en.wikipedia.org/wiki/Rwandan_Genocide)).
+
+
+```r
+gapminder %>% 
+  filter(country %in% as.character(head(dat2, 5)[["country"]])) %>% 
+  group_by(country) %>% 
+  do(figs = plotfig2(., x="year", y="lifeExp")) %>% 
+  .[match(dat2[["country"]], .$country),] %>% 
+  .$figs
+```
+
+![](figure/hw04-unnamed-chunk-25-1.png) ![](figure/hw04-unnamed-chunk-25-2.png) ![](figure/hw04-unnamed-chunk-25-3.png) ![](figure/hw04-unnamed-chunk-25-4.png) ![](figure/hw04-unnamed-chunk-25-5.png) 
+
+On the other hand, the best fits are:
+
+```r
+dat2 <- gapminder %>% 
+  group_by(country) %>% 
+  do(lm_intercept_slope2(., "lifeExp ~ year")) %>% 
+  ungroup() %>% 
+  arrange(desc(Rsquared))
+
+dat2 %>% head() %>% kable()
+```
+
+
+
+|country     |  intercept|     slope|   SStotal|  Rsquared|
+|:-----------|----------:|---------:|---------:|---------:|
+|Brazil      |  -709.9427| 0.3900895| 1.0642984| 0.9980474|
+|Mauritania  |  -831.3813| 0.4464175| 1.6608258| 0.9976743|
+|France      |  -397.7646| 0.2385014| 0.4842062| 0.9976246|
+|Switzerland |  -364.3421| 0.2222315| 0.4618694| 0.9973909|
+|Pakistan    |  -748.3836| 0.4057923| 1.6235560| 0.9972497|
+|Indonesia   | -1201.9366| 0.6346413| 4.1673202| 0.9971142|
+
+When we make the plot for "Brazil", indeed the actual data closely follows the linear model.
+
+
+```r
+gapminder %>% 
+  filter(country %in% as.character(head(dat2, 5)[["country"]])) %>% 
+  group_by(country) %>% 
+  do(figs = plotfig2(., x="year", y="lifeExp") +
+       theme(#axis.text.x = element_text(angle=90, hjust=1, vjust=0.5),
+         panel.background = element_rect(fill = "#faf2eb"),
+         panel.border = element_rect(color="white", fill=NA),
+         panel.grid.major = element_line(color = "white")
+       )) %>% 
+  .[match(dat2[["country"]], .$country),] %>% 
+  .$figs
+```
+
+![](figure/hw04-unnamed-chunk-27-1.png) ![](figure/hw04-unnamed-chunk-27-2.png) ![](figure/hw04-unnamed-chunk-27-3.png) ![](figure/hw04-unnamed-chunk-27-4.png) ![](figure/hw04-unnamed-chunk-27-5.png) 
+
+This means that for these countries where the data fits well with a linear model, we can make predictions with more confidence!! 

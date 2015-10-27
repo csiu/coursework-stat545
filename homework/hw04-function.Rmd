@@ -297,3 +297,136 @@ gapminder %>%
 ```
 
 The non `dplyr`-ness of the above is PART3... is there a way to `arrange` (or order) the rows of the data.frame by another vector?
+
+----
+
+----
+
+## Edit.
+
+According to @[roypan](https://github.com/roypan),
+
+> In your function, you used sum of squares of residual (SSres) to determine whether a fitted model is good or not. But in many cases, different data sets have different range and variability. So we may also wish to take into consideration the scaling effect of total sum of squares (SStotal). Therefore, a more common way to determine the goodness of a linear model is to calculate the coefficient of determination / R^2, which is `1 - SSres / SStotal`.
+
+**UPDATE MY FUNCTIONS**
+
+- `fit_error` will be renamed to `SStotal`
+- include @roypan's suggestion of `Rsquared`
+- update plotting to include `SStotal` and `Rsquared` labels
+
+```{r}
+lm_intercept_slope2 <- function(dat, f="lifeExp ~ year"){
+  fit <- lm(as.formula(f), dat)
+  SStotal <- sum(residuals(fit)^2)
+  
+  setNames(data.frame(t(coef(fit)),
+                      SStotal, #sum of squares of residual
+                      #1 - (residuals(fit)^2/SStotal) #Coefficient of determination aka R^2
+                      summary(fit)$r.squared #Coefficient of determination aka R^2
+                      ), 
+           c("intercept", "slope", "SStotal", "Rsquared"))
+}
+
+plotfig2 <- function(dat, x="year", y="lifeExp") {
+  fit <- lm(dat[[y]] ~ dat[[x]])
+  b <- coef(fit)[1]
+  m <- coef(fit)[2]
+  
+  SStotal <- sum(residuals(fit)^2)
+  Rsquared <- summary(fit)$r.squared
+  
+  y_hat <- data.frame(x = dat[[x]],
+                      predicted_y = m * dat[[x]] + b)
+    
+  ggplot(dat) +
+    aes_string(x=x, y=y) +
+    geom_abline(intercept = b, slope = m,
+                color = "red") +
+    geom_point(data=y_hat, aes(x=x, y=predicted_y), 
+               color="red", size=3, shape=1) +
+    geom_point(size=3) +
+    geom_line(alpha=0.6) +
+    scale_x_continuous(breaks = dat[[x]]) +
+    theme_minimal() +
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.y = element_line(linetype = "dotted"),
+      axis.title = element_text(size=14, face="bold")
+    ) +
+    annotate("text", 
+             label=sprintf('country: %s\nR-squared: %s\nSStotal: %s', 
+                           dat[["country"]][1],
+                           round(Rsquared, 4),
+                           round(SStotal, 4)), #assume country is defined
+             x=min(dat[[x]]), 
+             y=max(dat[[y]]), 
+             hjust=0,
+             vjust=1,
+             alpha=0.4,
+             fontface="bold",
+             family="Courier",
+             size=5
+             )
+}
+```
+
+Again, some testing of the functions with "Canada"
+
+```{r}
+lm_intercept_slope2(dat)
+plotfig2(dat)
+```
+
+**APPLICATION/UPDATE FOR: "Category: life expectancy vs year"**
+
+NOTE: Previous result for worst fits were: Zimbabwe, Swaziland, Rwanda, Botswana, and Lesotho.
+
+```{r}
+dat2 <- gapminder %>% 
+  group_by(country) %>% 
+  do(lm_intercept_slope2(., "lifeExp ~ year")) %>% 
+  ungroup() %>% 
+  arrange(Rsquared)
+
+dat2 %>% head() %>% kable()
+```
+
+It's interesting to see here that Rwanda made top of this worst linear fits list (likely due to the major decline in life expectancy in 1992 from the [Rwandan Genocide](https://en.wikipedia.org/wiki/Rwandan_Genocide)).
+
+```{r results='hide'}
+gapminder %>% 
+  filter(country %in% as.character(head(dat2, 5)[["country"]])) %>% 
+  group_by(country) %>% 
+  do(figs = plotfig2(., x="year", y="lifeExp")) %>% 
+  .[match(dat2[["country"]], .$country),] %>% 
+  .$figs
+```
+
+On the other hand, the best fits are:
+```{r}
+dat2 <- gapminder %>% 
+  group_by(country) %>% 
+  do(lm_intercept_slope2(., "lifeExp ~ year")) %>% 
+  ungroup() %>% 
+  arrange(desc(Rsquared))
+
+dat2 %>% head() %>% kable()
+```
+
+When we make the plot for "Brazil", indeed the actual data closely follows the linear model.
+
+```{r results='hide'}
+gapminder %>% 
+  filter(country %in% as.character(head(dat2, 5)[["country"]])) %>% 
+  group_by(country) %>% 
+  do(figs = plotfig2(., x="year", y="lifeExp") +
+       theme(#axis.text.x = element_text(angle=90, hjust=1, vjust=0.5),
+         panel.background = element_rect(fill = "#faf2eb"),
+         panel.border = element_rect(color="white", fill=NA),
+         panel.grid.major = element_line(color = "white")
+       )) %>% 
+  .[match(dat2[["country"]], .$country),] %>% 
+  .$figs
+```
+
+This means that for these countries where the data fits well with a linear model, we can make predictions with more confidence!! 
