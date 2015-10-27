@@ -1,0 +1,36 @@
+---
+title: 'hw05: factor & figure management; repo hygine'
+author: "csiu"
+date: "October 26, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.path='figure/hw05-')
+options(knitr.table.format = 'markdown')
+```
+
+- [link to homework](http://stat545-ubc.github.io/hw05_factor-figure-boss-repo-hygiene.html)
+
+## Factor management
+## Visualization design
+## Writing figures to file
+## Clean up your repo
+This is convienently DONE! 
+
+In the first week of lecture (which seems like just yesterday but not and thus is frightening how time flies), Jenny showed us a nice and organized repo where links to homework and classnotes where listed -- in a table of contents -- in the top level README file. I thought this was useful and so I have been adhering to this standard since ... i.e. after every classnote/homework file, I've been listing the new file in my [README](https://github.com/STAT545-UBC/celia_siu/blob/master/README.md) file so that my repo remains clean.
+
+In addition, to ignore `*html` and other irrelevant files, I've been ignoring them in git using the [.gitignore](https://github.com/STAT545-UBC/celia_siu/blob/master/.gitignore) file.
+
+## But I want to do more!
+## Report your progress
+Here is a list of what I learned in STAT545 that I did not know/realized previously:
+
+- RStudio/Rproject/Git setup is cool, useful, and powerful
+- RPubs is a way to share RScripts with the public (but I remain skeptical in using it)
+- `dplyr` -- where have you been all my life? -- is a necessity in manipulating data (especially the `%>%` pipe operator)
+- `tidyr` is really, really convienent in reshaping data
+- `ggplot(...) + stat_summary(...) ...` to add something such as min/max on the fly
+- Must try the palettes `viridis` package, it is mouth watering
+- `cowplot` (despite the strange name) is for plotting multiple plots on a page
