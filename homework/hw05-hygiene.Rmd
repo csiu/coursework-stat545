@@ -15,25 +15,199 @@ options(knitr.table.format = 'markdown')
 
 ```{r}
 library(gapminder)
+library(ggplot2)
+suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(rworldmap))
 library(classInt)
 library(viridis)
+library(knitr)
 ```
 
-## Factor management
-## Visualization design
-## Writing figures to file
-## Clean up your repo
-This is convienently DONE! 
+# Measure of wealth
 
-In the first week of lecture (which seems like just yesterday but not and thus is frightening how time flies), Jenny showed us a nice and organized repo where links to homework and classnotes where listed -- in a table of contents -- in the top level README file. I thought this was useful and so I have been adhering to this standard since ... i.e. after every classnote/homework file, I've been listing the new file in my [README](https://github.com/STAT545-UBC/celia_siu/blob/master/README.md) file so that my repo remains clean.
+First and foremost, let `wealth1` be a measure of `gdpPercap` i.e. let countries with higher `gdpPercap` be considered wealthy.
 
-In addition, to ignore `*html` and other irrelevant files, I've been ignoring them in git using the [.gitignore](https://github.com/STAT545-UBC/celia_siu/blob/master/.gitignore) file.
+_Note: We will be working with the latest data i.e. from 2007_
 
-## But I want to do more!
-According to Tamara, for noncontiguous small regions, we can see only 6-12 colors (including background color, lines, highlights).
-```{r rworldmap-lifeExp2007, fig.width=12, fig.height=6.5, warning=FALSE, results='hide'}
+To visualize the distribution of wealth, let us plot each country's `gdpPercap`.
+
+```{r fig.width=10}
+gdat <- gapminder %>% 
+  filter(year == 2007) %>% 
+  arrange(desc(gdpPercap)) 
+
+gdat %>%
+  ggplot(aes(x = country, 
+             y = gdpPercap,
+             color = continent)) +
+  #geom_hline(yintercept=median(gdat$gdpPercap), color="black") + 
+  #geom_hline(yintercept=mean(gdat$gdpPercap), color="black", linetype=5) +
+  geom_point() +
+  xlab("") +
+  ylab("") +
+  ggtitle("wealth1 (aka gdpPercap) per country") + 
+  theme(axis.text.x = element_text(angle=90, hjust=1, vjust=0.5, size=6, color="grey20"),
+        legend.justification = c(1, 1), 
+        legend.position = c(1, 1),
+        plot.title = element_text(face="bold")
+        )
+```
+
+This figure is messy. In this case, it is easy to tell the wealthiest country, but it gets much harder when we try to identify the poorest (or second poorest) country. From the code, it is also interesting to note that `arrange()` does nothing for arranging the country order on the figure.
+
+> Factor management
+
+We will reorder the countries using `reorder()`:
+
+```{r fig.width=10}
+gdat <- gapminder %>% 
+  filter(year == 2007) 
+
+gdat %>%  
+  ggplot(aes(x = reorder(country, gdpPercap, FUN=function(x){-x}), 
+             y = gdpPercap,
+             color = continent)) +
+  geom_hline(yintercept=median(gdat$gdpPercap), color="black") + 
+  geom_hline(yintercept=mean(gdat$gdpPercap), color="black", linetype=5) +
+  geom_point() +
+  xlab("") +
+  ylab("") +
+  ggtitle("wealth1 (aka gdpPercap) per country") + 
+  theme(axis.text.x = element_text(angle=90, hjust=1, vjust=0.5, size=6, color="grey20"),
+        legend.justification = c(1, 1), 
+        legend.position = c(1, 1),
+        plot.title = element_text(face="bold")
+        )
+```
+
+In the graph above, the dashed line represents the **mean** and the solid line represents the **median** gdpPercap for the countries. Depending on which statistic you look at, the country in the middle is Iran (for mean) or Dominican Republic (for median). In addition, after `reorder`-ing the countries, we see that Norway is the wealthiest country followed clearly by Kuwait, Singapore, and so on until we get to the poorest country being Liberia, then The Democratic Republic of the Congo.
+
+The measure of wealth using only `gdpPercap` is simple, let us now consider `wealth2` i.e. the wealth relative to population size (`pop`). In this new model, let us suppose a person's wealth is equal to a country's `gdpPercap` split up amongst the population. This means that individuals of a country with a large population gets less wealth as compared to individuals of a country with a small population with the same amount of wealth to share. 
+
+```{r fig.width=10}
+## LET'S DEFINE A NEW FUNCTION
+headtail <- function(dat, n=5){
+  dotdotdot <- head(dat, 1)
+  dotdotdot[,] <- "."
+  
+  rbind(head(dat, n),
+        dotdotdot,
+        tail(dat, n)
+        )
+}
+
+## DO SOMETHING...
+gdat2 <- gapminder %>% 
+  filter(year == 2007
+         #,continent != "Oceania"
+         ) %>% 
+  mutate(wealth2 = gdpPercap / log(pop)) %>%
+  arrange(desc(wealth2)) 
+
+gdat2 %>% 
+  headtail(5) %>% 
+  kable()
+```
+
+The table shows the top and bottom 5 countries in accordance to our new measure of wealth.
+
+```{r fig.width=12, fig.height=6.5, warning=FALSE, results='hide'}
+## REFERENCE: https://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf
+numCats <- 6
+category <- "wealth2"
+
+sPDF <- joinCountryData2Map(gdat2,
+                            joinCode="NAME",
+                            nameJoinColumn="country",
+                            mapResolution="li",
+                            verbose=TRUE)
+
+#getting class intervals
+classInt <- classIntervals(sPDF[[category]],
+                           n=numCats, style = "jenks")
+catMethod <- classInt[["brks"]]
+
+#getting colours
+colourPalette <- magma(numCats)
+
+#plot map
+#mapDevice() #create world map shaped window
+mapParams <- mapCountryData(sPDF,
+                            nameColumnToPlot=category,
+                            numCats=numCats,
+                            catMethod=catMethod,
+                            colourPalette=colourPalette,
+                            addLegend=FALSE,
+                            mapTitle=sprintf('%s in 2007', category)
+                            )
+
+#adding legend
+do.call(addMapLegend,
+        c(mapParams,
+          legendLabels="all",
+          legendWidth=1,
+          legendIntervals="data",
+          legendMar = 2))
+```
+
+> Visualization design
+
+According to Tamara Munzner, for noncontiguous small regions, we can see only 6-12 colors (including background color, lines, highlights). In this figure, I categorized wealth into 6 bins. 
+
+> I always wanted to do some mapping with R... and here is the perfect chance to do so!!
+
+In this figure, we can see that countries in central Africa and around China are the poorest by our new definition of wealth (`wealth2`). On the other hand, Iceland moves up in wealthiness.
+
+----
+
+New measure of wealth, this time including life expectancy (`lifeExp`). GDP per capita is given as a yearly average. In new model, we will consider the wealth accumulated in a life time. We will also be optimistic and assume the GDP per capita increases by 2% each year. This wealth (`wealth3`) is calculated by `gdpPercap / log(pop) * 1.02 * lifeExp`.
+
+```{r}
+gdat3 <- gapminder %>% 
+  filter(year == 2007) %>% 
+  mutate(wealth2 = gdpPercap / log(pop),
+         wealth3 = wealth2 * 1.02 * lifeExp) %>% 
+  arrange(desc(wealth3))
+
+gdat3 %>% 
+  headtail() %>% 
+  kable()
+```
+
+We will now see which continent is the wealthiest.
+
+```{r}
+gdat3 %>% 
+  ggplot(aes(x = reorder(continent, wealth3, FUN=function(x){-median(x)}),
+             y = wealth3)) +
+  geom_jitter(position = position_jitter(w=0.12, h=0)) +
+  #geom_point(alpha = 0.5) + 
+  stat_summary(fun.y=median, geom="point", color="red", size=4, alpha=0.6) +
+  xlab("") +
+  theme_bw()
+```
+
+The median country of Oceania looks to be wealthiest, but individually, there are wealthier countries. Let us drop Oceania.
+
+```{r}
+gdat3 %>% 
+  filter(continent != "Oceania") %>% 
+  ggplot(aes(x = reorder(continent, wealth3, FUN=function(x){-median(x)}),
+             y = wealth3)) +
+  geom_jitter(position = position_jitter(w=0.12, h=0)) +
+  #geom_point(alpha = 0.5) + 
+  stat_summary(fun.y=median, geom="point", color="red", size=4, alpha=0.6) +
+  xlab("") +
+  theme_bw()
+```
+
+**TODO: label richest/poorest country**
+
+
+> But I want to do more!/Writing figures to file
+
+```{r rworldmap-lifeExp2007, fig.width=12, fig.height=6.5, warning=FALSE, results='hide', include=FALSE}
 ## REFERENCE: https://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf
 
 gdat <- gapminder %>% 
@@ -78,6 +252,64 @@ do.call(addMapLegend,
           legendWidth=1,
           legendIntervals="data",
           legendMar = 2))
+
+#In the figure, we can see that Africa (particularly south Africa) is the continent where the population has the lowest life expectancy. On the other hand, Canada, US, Australia, and Europe and mainly the places with high life expectancy. 
+```
+
+
+```{r include=FALSE}
+## REFERENCES
+## mapping in ggplot: http://stackoverflow.com/questions/29907053/plot-colour-coded-world-map-using-ggplot2
+## categorical to bin: http://stackoverflow.com/questions/14763514/bin-continuous-values-in-ggplot2-based-on-criteria-to-obtain-more-distinct-col
+## joins: https://stat545-ubc.github.io/bit001_dplyr-cheatsheet.html#left_joinsuperheroes-publishers
+
+map.world <- map_data(map="world")
+
+## Ensure that countries map
+cg <- gapminder$country %>% unique() %>% sort()
+cm <- map.world$region %>% unique() %>% sort()
+
+## Need to fix the mapping
+map.world$region <- revalue(map.world$region, replace=c("USA" = "United States", 
+                                                        "UK" = "United Kingdom",
+                                                        "North Korea" = "Korea, Dem. Rep.",
+                                                        "South Korea" = "Korea, Rep.",
+                                                        "Yemen" = "Yemen, Rep.",
+                                                        "West Bank" = "West Bank and Gaza",
+                                                        "Gaza Strip" = "West Bank and Gaza",
+                                                        #"Congo" = "Congo, Dem. Rep.",
+                                                        #"Congo" = "Congo, Rep.",
+                                                        "Trinidad" = "Trinidad and Tobago",
+                                                        "Tobago" = "Trinidad and Tobago"
+                                                        ))
+
+## Have life expectancy, but can't map to world
+setdiff(cg, map.world$region %>% unique() %>% sort())
+
+## Missing life expectancy data
+setdiff(map.world$region %>% unique() %>% sort(), cg)
+
+grep("congo", cm, value = T, ignore.case = T)
+
+
+map.world2 <- inner_join(map.world, 
+                        gapminder, #%>% filter(year %in% c(2007)), 
+                        by = c("region" = "country"))
+
+gg <- ggplot() + 
+  #geom_map(data=map.world2, map=map.world2, aes(x=long, y=lat, map_id=region), fill="grey90") + 
+  #geom_polygon(data=map.world2, aes(x=long, y=lat, group=group), fill="grey90") + 
+  geom_map(data=transform(map.world2, lifeExps=cut(lifeExp, 6)) %>% filter(year != "NA"), 
+           map=map.world2, 
+           aes(map_id=region, x=long, y=lat, fill=lifeExps)) + 
+  scale_fill_viridis(discrete=TRUE, option="A", name="Range of\nLife expectancy") + 
+  coord_equal() +
+  facet_wrap(~year, ncol=2, drop = TRUE) + 
+  theme(panel.grid.major = element_line(size=0.3),
+        panel.grid.minor = element_line(size=0.2)
+        )
+
+#ggsave(filename="/Users/csiu/repo/celia_siu/Rplot.png", plot=gg, width=7.2, height=7)
 ```
 
 ```{r include=FALSE}
@@ -88,6 +320,13 @@ do.call(addMapLegend,
 "Singapore" %in% sPDF@data$NAME
 "SGP" %in% sPDF@data$ISO3
 ```
+
+## Clean up your repo
+This is convienently DONE! 
+
+In the first week of lecture (which seems like just yesterday but not and thus is frightening how time flies), Jenny showed us a nice and organized repo where links to homework and classnotes where listed -- in a table of contents -- in the top level README file. I thought this was useful and so I have been adhering to this standard since ... i.e. after every classnote/homework file, I've been listing the new file in my [README](https://github.com/STAT545-UBC/celia_siu/blob/master/README.md) file so that my repo remains clean.
+
+In addition, to ignore `*html` and other irrelevant files, I've been ignoring them in git using the [.gitignore](https://github.com/STAT545-UBC/celia_siu/blob/master/.gitignore) file.
 
 ## Report your progress
 Here is a list of what I learned in STAT545 that I did not know/realized previously:

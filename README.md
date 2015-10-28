@@ -29,4 +29,4 @@ _These notes are the difference between what I already know and what I find inte
 - Homework02: [exploring gapminder and using rmd](homework/hw02-gapminder-rmd.md)
 - Homework03: [manipulating and exploring data with dplyr and ggplot2](homework/hw03-dplyr.md)
 - Homework04: [split-apply-combine with your functions](homework/hw04-function.md)
-- Homework05: [factor, figure, hygiene](homework/hw05-hygiene.md)
+- Homework05: [factor, figure, hygiene](homework/hw05-hygiene.Rmd)
