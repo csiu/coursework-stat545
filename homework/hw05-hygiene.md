@@ -8,6 +8,7 @@ October 26, 2015
 
 ```r
 library(gapminder)
+#library(cowplot)
 library(ggplot2)
 suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(dplyr))
@@ -48,7 +49,7 @@ gdat %>%
         )
 ```
 
-![](figure/hw05-unnamed-chunk-3-1.png) 
+![](figure/hw05-wealth1-unordered-1.png) 
 
 This figure is messy. In this case, it is easy to tell the wealthiest country, but it gets much harder when we try to identify the poorest (or second poorest) country. From the code, it is also interesting to note that `arrange()` does nothing for arranging the country order on the figure.
 
@@ -78,7 +79,7 @@ gdat %>%
         )
 ```
 
-![](figure/hw05-unnamed-chunk-4-1.png) 
+![](figure/hw05-wealth1-ordered-1.png) 
 
 In the graph above, the dashed line represents the **mean** and the solid line represents the **median** gdpPercap for the countries. Depending on which statistic you look at, the country in the middle is Iran (for mean) or Dominican Republic (for median). In addition, after `reorder`-ing the countries, we see that Norway is the wealthiest country followed clearly by Kuwait, Singapore, and so on until we get to the poorest country being Liberia, then The Democratic Republic of the Congo.
 
@@ -168,7 +169,7 @@ do.call(addMapLegend,
           legendMar = 2))
 ```
 
-![](figure/hw05-unnamed-chunk-6-1.png) 
+![](figure/hw05-wealth2-world-1.png) 
 
 > Visualization design
 
@@ -184,11 +185,13 @@ New measure of wealth, this time including life expectancy (`lifeExp`). GDP per 
 
 
 ```r
-gapminder %>% 
+gdat3 <- gapminder %>% 
   filter(year == 2007) %>% 
   mutate(wealth2 = gdpPercap / log(pop),
          wealth3 = wealth2 * 1.02 * lifeExp) %>% 
-  arrange(desc(wealth3)) %>% 
+  arrange(desc(wealth3))
+
+gdat3 %>% 
   headtail() %>% 
   kable()
 ```
@@ -209,8 +212,58 @@ gapminder %>%
 |141 |Zimbabwe         |Africa    |2007 |43.487  |12311143 |469.7092981 |28.7706025119209 |1276.17013526462 |
 |142 |Congo, Dem. Rep. |Africa    |2007 |46.462  |64606759 |277.5518587 |15.433412404393  |731.408551275568 |
 
+We will now see which continent is the wealthiest.
 
 
+```r
+gdat3 %>% 
+  ggplot(aes(x = continent,
+             #x = reorder(continent, wealth3, FUN=function(x){-median(x)}),
+             y = wealth3)) +
+  geom_jitter(position = position_jitter(w=0.12, h=0)) +
+  #geom_point(alpha = 0.5) + 
+  stat_summary(fun.y=median, geom="point", 
+               color="red", size=4, alpha=0.6) +
+  stat_summary(fun.y=mean, geom="point", 
+               color="yellow", size=4, alpha=0.6) +
+  xlab("") +
+  theme_bw()
+```
+
+![](figure/hw05-wealth3-continent-unordered-1.png) 
+
+According to the mean (yellow) and median (red) of `wealth3`, Oceania looks to be the continent with the wealthiest countries. But when looking at the countries individuall, there are wealthier countries in other continents. Let us drop Oceania.
+
+
+```r
+gg_median <- gdat3 %>% 
+  filter(continent != "Oceania") %>% 
+  ggplot(aes(x = reorder(continent, wealth3, FUN=function(x){-median(x)}),
+             y = wealth3)) +
+  geom_jitter(position = position_jitter(w=0.12, h=0)) +
+  stat_summary(fun.y=median, geom="point", 
+               color="red", size=4, alpha=0.6) +
+  xlab("") +
+  ggtitle("Wealth3 of continents ordered by Median") + 
+  theme_bw()
+
+gg_mean <- gdat3 %>% 
+  filter(continent != "Oceania") %>% 
+  ggplot(aes(x = reorder(continent, wealth3, FUN=function(x){-mean(x)}),
+             y = wealth3)) +
+  geom_jitter(position = position_jitter(w=0.12, h=0)) +
+  stat_summary(fun.y=mean, geom="point", 
+               color="yellow", size=4, alpha=0.6) +
+  xlab("") +
+  ggtitle("Wealth3 of continents ordered by Mean") + 
+  theme_bw()
+
+cowplot::plot_grid(gg_median, gg_mean)
+```
+
+![](figure/hw05-wealth3-continent-ordered-1.png) 
+
+**TODO: label richest/poorest country**
 
 
 > But I want to do more!/Writing figures to file

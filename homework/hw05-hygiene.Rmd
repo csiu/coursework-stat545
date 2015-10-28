@@ -15,6 +15,7 @@ options(knitr.table.format = 'markdown')
 
 ```{r}
 library(gapminder)
+#library(cowplot)
 library(ggplot2)
 suppressPackageStartupMessages(library(plyr))
 suppressPackageStartupMessages(library(dplyr))
@@ -32,7 +33,7 @@ _Note: We will be working with the latest data i.e. from 2007_
 
 To visualize the distribution of wealth, let us plot each country's `gdpPercap`.
 
-```{r fig.width=10}
+```{r wealth1-unordered, fig.width=10}
 gdat <- gapminder %>% 
   filter(year == 2007) %>% 
   arrange(desc(gdpPercap)) 
@@ -60,7 +61,7 @@ This figure is messy. In this case, it is easy to tell the wealthiest country, b
 
 We will reorder the countries using `reorder()`:
 
-```{r fig.width=10}
+```{r wealth1-ordered, fig.width=10}
 gdat <- gapminder %>% 
   filter(year == 2007) 
 
@@ -85,7 +86,7 @@ In the graph above, the dashed line represents the **mean** and the solid line r
 
 The measure of wealth using only `gdpPercap` is simple, let us now consider `wealth2` i.e. the wealth relative to population size (`pop`). In this new model, let us suppose a person's wealth is equal to a country's `gdpPercap` split up amongst the population. This means that individuals of a country with a large population gets less wealth as compared to individuals of a country with a small population with the same amount of wealth to share. 
 
-```{r fig.width=10}
+```{r wealth2, fig.width=10}
 ## LET'S DEFINE A NEW FUNCTION
 headtail <- function(dat, n=5){
   dotdotdot <- head(dat, 1)
@@ -112,7 +113,7 @@ gdat2 %>%
 
 The table shows the top and bottom 5 countries in accordance to our new measure of wealth.
 
-```{r fig.width=12, fig.height=6.5, warning=FALSE, results='hide'}
+```{r wealth2-world, fig.width=12, fig.height=6.5, warning=FALSE, results='hide'}
 ## REFERENCE: https://journal.r-project.org/archive/2011-1/RJournal_2011-1_South.pdf
 numCats <- 6
 category <- "wealth2"
@@ -163,7 +164,7 @@ In this figure, we can see that countries in central Africa and around China are
 
 New measure of wealth, this time including life expectancy (`lifeExp`). GDP per capita is given as a yearly average. In new model, we will consider the wealth accumulated in a life time. We will also be optimistic and assume the GDP per capita increases by 2% each year. This wealth (`wealth3`) is calculated by `gdpPercap / log(pop) * 1.02 * lifeExp`.
 
-```{r}
+```{r wealth3}
 gdat3 <- gapminder %>% 
   filter(year == 2007) %>% 
   mutate(wealth2 = gdpPercap / log(pop),
@@ -177,29 +178,47 @@ gdat3 %>%
 
 We will now see which continent is the wealthiest.
 
-```{r}
+```{r wealth3-continent-unordered}
 gdat3 %>% 
-  ggplot(aes(x = reorder(continent, wealth3, FUN=function(x){-median(x)}),
+  ggplot(aes(x = continent,
+             #x = reorder(continent, wealth3, FUN=function(x){-median(x)}),
              y = wealth3)) +
   geom_jitter(position = position_jitter(w=0.12, h=0)) +
   #geom_point(alpha = 0.5) + 
-  stat_summary(fun.y=median, geom="point", color="red", size=4, alpha=0.6) +
+  stat_summary(fun.y=median, geom="point", 
+               color="red", size=4, alpha=0.6) +
+  stat_summary(fun.y=mean, geom="point", 
+               color="yellow", size=4, alpha=0.6) +
   xlab("") +
   theme_bw()
 ```
 
-The median country of Oceania looks to be wealthiest, but individually, there are wealthier countries. Let us drop Oceania.
+According to the mean (yellow) and median (red) of `wealth3`, Oceania looks to be the continent with the wealthiest countries. But when looking at the countries individuall, there are wealthier countries in other continents. Let us drop Oceania.
 
-```{r}
-gdat3 %>% 
+```{r wealth3-continent-ordered, fig.width=11}
+gg_median <- gdat3 %>% 
   filter(continent != "Oceania") %>% 
   ggplot(aes(x = reorder(continent, wealth3, FUN=function(x){-median(x)}),
              y = wealth3)) +
   geom_jitter(position = position_jitter(w=0.12, h=0)) +
-  #geom_point(alpha = 0.5) + 
-  stat_summary(fun.y=median, geom="point", color="red", size=4, alpha=0.6) +
+  stat_summary(fun.y=median, geom="point", 
+               color="red", size=4, alpha=0.6) +
   xlab("") +
+  ggtitle("Wealth3 of continents ordered by Median") + 
   theme_bw()
+
+gg_mean <- gdat3 %>% 
+  filter(continent != "Oceania") %>% 
+  ggplot(aes(x = reorder(continent, wealth3, FUN=function(x){-mean(x)}),
+             y = wealth3)) +
+  geom_jitter(position = position_jitter(w=0.12, h=0)) +
+  stat_summary(fun.y=mean, geom="point", 
+               color="yellow", size=4, alpha=0.6) +
+  xlab("") +
+  ggtitle("Wealth3 of continents ordered by Mean") + 
+  theme_bw()
+
+cowplot::plot_grid(gg_median, gg_mean)
 ```
 
 **TODO: label richest/poorest country**
