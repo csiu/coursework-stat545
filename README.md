@@ -9,6 +9,8 @@ http://stat545-ubc.github.io/celia_siu/
 ## Class Notes
 _These notes are the difference between what I already know and what I find interesting_
 
+**STAT545**
+
 - [2015-09-08_cm001: intro](classnotes/2015-09-08-cm001-intro.md)
 - [2015-09-10_cm002: rstudio](classnotes/2015-09-10-cm002-rstudio.md)
 - [2015-09-15_cm003: rmd](classnotes/2015-09-15-cm003-rmd.md)
@@ -23,6 +25,10 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-10-15_cm012: tidyr to reshape data](classnotes/2015-10-15-cm012-tidy-and-reshape-data.md)
 - [2015-10-20_cm013: graphing tips](classnotes/2015-10-20-cm013-graphing-tips.md)
 - [2015-10-22_cm014: Guest lecture: Tamara Munzner](classnotes/2015-10-22-cm014-tamara.md)
+
+**stat547**
+
+- [2015-10-22_cm101: stat547/reading file IO](classnotes/2015-10-27-cm101-stat547.Rmd)
 
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
