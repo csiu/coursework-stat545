@@ -1,0 +1,38 @@
+---
+title: "regrex"
+author: "csiu"
+date: "October 29, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+- [lecture outline](http://stat545-ubc.github.io/cm103_regular-expressions.html)
+
+## regex
+
+- [regex slides](https://speakerdeck.com/ksamuk/ubc-stat545-2015-cm103-introduction-to-regular-expressions)
+- [regex 101](https://regex101.com/r/gZ2uW4/2)
+
+- language is composed of **literals** and **meta** (group and ranges; quantifiers; other) characters
+    - `(it|the)` = "it" OR "the" -- round bracket makes it more readable
+    
+    
+## A bit of R: [regrex](http://stat545-ubc.github.io/block027_regular-expressions-2015.html)
+> The character classes \w, \d, \s, can also be referred to using POSIX classes in R (e.g. `[[:alnum:]]` as opposed to `\w`)
+
+- Need to double escape in R
+
+```{r}
+library("stringr")
+
+ls("package:stringr")
+```
+
+> Like all things in R, Hadley Wickham has tried to improve string handling. This is implemented in his package stringr. There are lots of functions that take the place of existing ones, but with nicer syntax.
+
+- `str_replace_all()` is like `gsub()`
+- `str_trim()` to trim trailing white space! 
+- `str_extract_all()` like `grep(...,value = TRUE)`
+
+## Other
+- R package `twitteR`, which interfaces with Twitter’s REST API
