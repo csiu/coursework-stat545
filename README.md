@@ -30,6 +30,7 @@ _These notes are the difference between what I already know and what I find inte
 
 - [2015-10-27_cm101: stat547/reading file IO](classnotes/2015-10-27-cm101-stat547.Rmd)
 - [2015-10-29_cm102: regrex](classnotes/2015-10-29-cm102-regrex.md)
+- [2014-11-03_cm103: tidying data](2015-11-03-cm103-tidying-data.Rmd)
 
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)

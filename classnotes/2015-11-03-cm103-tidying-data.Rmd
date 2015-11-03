@@ -1,0 +1,41 @@
+---
+title: "wrangling candy data"
+author: "csiu"
+date: "November 3, 2015"
+output: html_document
+---
+
+- The data: [candy data](https://github.com/jennybc/candy)
+
+## Tips of Data cleaning
+
+0. Save the raw data
+    > revoke write permission on raw files
+    
+1. Get data out of Excel
+2. Get data into R
+    - e.g. `readxl::read_excel()` to access the Excel file directly from R
+    - use of `read.table()`
+    - need to deal with unicode
+    
+    > Drop variables, create new variables, rename variables
+    >
+    > Drop rows
+    >
+    > Lead to gold:
+    >     - weird character date -> proper dates
+    >     - number with helpful comma e.g. 1,000 -> numbers e.g. 1000
+    > 
+    > Reshape data
+    >
+    > character into factor OR factor into character
+    >
+    > Replace bad data with good data or NA
+    >
+    > save all this intermediate data! (preferably as text)
+    > 
+    > Integrate data that spread out multiple files/objects; 
+    > proper join/merge
+    >
+    > Fix data that can be rescued, Discard the rest
+
