@@ -1,0 +1,344 @@
+---
+title: 'hw07: Bring the Candy Survey data'
+author: "csiu"
+date: "November 8, 2015"
+output: html_document
+---
+```{r}
+knitr::opts_chunk$set(fig.path='figure/hw07-')
+options(knitr.table.format = 'markdown')
+```
+
+I have clean up candy data here: 
+
+- add [user id column](https://github.com/csiu/candyplay/blob/master/data-raw/02_add-user-column.md)
+- cleanup for [general factors](https://github.com/csiu/candyplay/blob/master/data-raw/03_tidy1.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/03_tidy1.csv)
+- cleanup for [guess number of mints](https://github.com/csiu/candyplay/blob/master/data-raw/04_tidy2-mints.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/04_tidy2-mints.csv)
+- cleanup for [age](https://github.com/csiu/candyplay/blob/master/data-raw/05_tidy3-age.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/05_tidy3-age.csv)
+- cleanup for [the candy itself](https://github.com/csiu/candyplay/blob/master/data-raw/06_tidy4-candy.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/06_tidy4-candy.csv)
+
+# Use of candy data
+
+I want to explore mints. 
+
+----
+## The questions:
+1. If you guess there is more mints in my hand, do you feel more joy towards mint candy?
+2. If you're taking the survey late at night, do you guess there is more mints in my hand?
+3. Do people 40 or older feel more joy towards mint candy?
+4. Given the people who said they were old, are we able to predict their age given preference towards mint candy & the number of mints they guess?
+
+## Data cleaning:
+Load packages:
+```{r}
+library(readr)
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(dplyr))
+library(ggplot2)
+```
+
+Load raw data:
+
+```{r}
+raw <- read_csv("../data/candy-survey-2015.csv")
+```
+
+Here are the columns of the raw data:
+```{r}
+colnames(raw)
+```
+
+Find columns of interest for analyzing mint data e.g. time of response, age of surveyee, any candy with the word "mint" in it, and the guess of the number of mints in my hands.
+```{r}
+(columns_of_interest <- colnames(raw) %>% 
+   grep("Timestamp|How old are you?|mint", ., value = TRUE, ignore.case = TRUE))
+```
+
+**Cleanup `timestamp`** by re-reading the file & creating a new `user` id column
+```{r}
+raw <- read_csv("../data/candy-survey-2015.csv",
+                col_types = cols(
+                  Timestamp = col_datetime("%m/%d/%Y %H:%M:%S")
+                ))
+raw <- raw %>% 
+  mutate(user = sprintf("ID-%04d", order(Timestamp)))
+```
+
+Select and rename the columns of interest e.g. 
+
+- replacing "How old are you?" with "age"
+- replacing "Guess the number of mints in my hand." with "n_mints"
+- removing `[` and `]` 
+
+```{r}
+raw <- raw[,c("user", columns_of_interest)]
+
+colnames(raw) <- plyr::revalue(colnames(raw), 
+                               replace = c("How old are you?" = "age", 
+                                           "Guess the number of mints in my hand." = "n_mints",
+                                           "Timestamp" = "timestamp"))
+colnames(raw) <- gsub("^\\[|\\]$", "", colnames(raw))
+colnames(raw)
+```
+
+**Cleanup `age`**, but first need to see what needs to be done:
+
+```{r}
+raw %>% 
+  filter(!grepl("^\\d+$", age), !is.na(age)) %>% 
+  mutate(age = tolower(age)) %>% 
+  group_by(age) %>% 
+  summarise(count = length(age)) %>% 
+  knitr::kable(format="markdown")
+```
+
+To do:
+
+- fix "37 (i’m taking a child)" and "42 - i’m taking my kid" by `grep`-ing for **taking** (Note those are the only instances of "taking") and keeping only the first 2 character in string
+- remove `,` and `:` from "37," and "46:"
+- replace "good lord! I’m 43!" with "43"
+- replace "40. deal with it.", "45, but the 8-year-old huntress and bediapered unicorn give me political cover and social respectability. however, i will eat more than they do combined.", and "50 (despair)" with only the first 2 characters in string
+- convert values to integers (and replace those that fail conversion with NA)
+- and keep only ages in valid ranges e.g. between 1 (i.e. don't want babies) - 116 (i.e. surveyee should be younger than the [oldest living person, Susannah Mushatt Jones, age 116](https://en.wikipedia.org/wiki/List_of_the_verified_oldest_people)).
+
+```{r}
+raw <- raw %>%
+  mutate(age = tolower(age),
+         age = plyr::mapvalues(age,
+                               from = grep("taking", age, value = TRUE),
+                               to = grep("taking", age, value = TRUE) %>%
+                                 substr(0, 2),
+                               warn_missing = FALSE),
+         age = plyr::mapvalues(age,
+                               from = grep("^\\d+[,:]$", age, value = TRUE),
+                               to = grep("^\\d+[,:]$", age, value = TRUE) %>%
+                                 sub("[,:]$", "", .),
+                               warn_missing = FALSE),
+         age = plyr::mapvalues(age,
+                               from = grep("43!", age, value = TRUE),
+                               to = 43,
+                               warn_missing = FALSE),
+         age = plyr::mapvalues(age,
+                               from = grep("^40. deal with it.|^45, but the|^50 \\(despair\\)",
+                                           age, value = TRUE),
+                               to = grep("^40. deal with it.|^45, but the|^50 \\(despair\\)",
+                                         age, value = TRUE) %>%
+                                 substr(0, 2),
+                               warn_missing = FALSE),
+         age = suppressWarnings(as.integer(age)),
+         age = ifelse(age > 116 | age < 1, NA, age)
+  )
+```
+
+The distribution of the ages:
+```{r ages}
+raw %>% 
+  ggplot(aes(x = age, y = ..count..)) + 
+  geom_bar(binwidth=1)
+```
+
+Here is a summary:
+```{r}
+summary(raw$age) %>% 
+  broom::tidy()
+```
+
+
+**Cleanup `n_mints`**, but first need to see what needs to be done:
+
+```{r}
+raw %>%
+  filter(!grepl("^\\d+$", n_mints), !is.na(n_mints), !grepl("_", n_mints)) %>% 
+  mutate(n_mints = tolower(n_mints)) %>% 
+  group_by(n_mints) %>% 
+  summarise(count = length(n_mints)) %>% 
+  arrange(desc(count)) %>% 
+  knitr::kable()
+```
+
+To do:
+
+- Removing punctuation at the end of strings e.g. "5?", "7!"
+- Mapping any string starting with 0 or contains "zero" or "none" to be 0 e.g. "0 - you ate them", "zero! who keeps mints in their hand", "none i hate mints"
+- Removing commas in strings that contain only digits/commas e.g. "5,000"
+- Manually revalue some factors e.g. "six" is 6 and "7.3/4" is 1.825
+- Converting values to integers (and replacing those that fail conversion with NA)
+- Replacing negative integers with NA (since this is count data)
+
+```{r}
+raw <- raw %>%
+  mutate(
+    n_mints = tolower(n_mints),
+    n_mints = plyr::mapvalues(n_mints,
+                              from = grep("[.!?]$", n_mints, value=TRUE),
+                              to   = grep("[.!?]$", n_mints, value=TRUE) %>%
+                                gsub("[.!?]$", "", .),
+                              warn_missing = FALSE),
+    n_mints = plyr::mapvalues(n_mints,
+                              from = grep("^0|^zero|none", n_mints, value = TRUE),
+                              to   = grep("^0|^zero|none", n_mints, value = TRUE) %>%
+                                length() %>%
+                                rep(0, .),
+                              warn_missing = FALSE),
+    n_mints = plyr::mapvalues(n_mints,
+                              from = grep("^\\d+,[.,0-9]+$", n_mints, value = TRUE),
+                              to   = grep("^\\d+,[.,0-9]+$", n_mints, value = TRUE) %>%
+                                gsub(",", "", .)),
+    n_mints = plyr::revalue(n_mints, replace = c("one"=1, "two"=2, "three"=3, "four"=4, "five"=5,
+                                                 "six"=6, "seven"=7, "eight"=8, "nine"=9, "ten"=10,
+                                                 "twelve"=12, "π"=pi,
+                                                 "2 1/2"=2.5, "420+69"=489, "7.3/4"=1.825,
+                                                 "1 billion"=1000000000),
+                            warn_missing = FALSE),
+    n_mints = suppressWarnings(as.integer(n_mints)),
+    n_mints = ifelse(n_mints < 0, NA, n_mints)
+  )
+```
+
+Here is a summary of the guesses.
+```{r}
+summary(raw$n_mints) %>% 
+  broom::tidy()
+```
+
+These people guest the greatest number of mints:
+```{r}
+raw %>% 
+  select(user, n_mints) %>% 
+  arrange(desc(n_mints)) %>% 
+  head(10) %>% 
+  knitr::kable()
+```
+
+The distribution of mint guesses from 0 to 100 -- most people guess between 0 - 5 mints.
+```{r mints}
+raw %>% 
+  ggplot(aes(x = n_mints, y = ..count..)) + 
+  geom_bar(binwidth=5) +
+  xlim(0,100)
+```
+
+At this point I have, 
+
+- created user ids
+- cleaned the timestamp
+- cleaned the ages
+- cleaned the guess of mints in my hand
+- renamed the headers for the candy data and am keeping the despair and joy for candy data
+
+```{r}
+processed <- raw
+rm(raw)
+```
+
+## The answers:
+Now that the data is clean, we can answer the questions posed previously.
+
+> 1. If you guess there is more mints in my hand, do you feel more joy towards mint candy?
+
+**Figuring out how many mints is "more mints"**
+```{r mints_gess, fig.keep='last'}
+processed %>% 
+  select(n_mints) %>% 
+  gather(factor,guess) %>% 
+  ggplot(aes(x = factor, y = guess)) +
+  geom_boxplot() +
+  ylim(0,100) +
+  xlab("") + 
+  coord_flip()
+
+summary(processed$n_mints) %>% 
+broom::tidy()
+```
+
+From the boxplot and 3rd quantile, we see that most people guess there are less than 10 mints in my hand. (From the warning we can also see that 707 surveyees predicted more than 100 mints.) We will thus divide the surveyees into 2 groups: those with guesses less than 10, and those with guesses 10 or more. 
+
+**The groupings**
+```{r}
+processed <- processed %>% 
+  mutate(more_group = n_mints >= 10)
+
+processed %>% 
+  group_by(more_group) %>% 
+  summarise(n = length(more_group),
+            fraction = n / nrow(processed)) %>% 
+  knitr::kable()
+```
+
+From this table, we see that 21.3% of surveyees have a guess of 10 or more, 67.5% have a guess of less than 10, and 11.1% did not respond.
+
+**Preferences of each group**
+Here we summarize the preference of each group. Scoring is based on JOY = +1 and DESPAIR = -1.
+```{r}
+find_sum <- function(x, is_joy=TRUE, find_diff=FALSE){
+  if (find_diff) {
+    sum(x == "JOY", na.rm = TRUE) - sum(x == "DESPAIR", na.rm = TRUE)
+  } else {
+    feeling = ifelse(is_joy, "JOY", "DESPAIR")
+    ifelse(is_joy, 
+           sum(x == feeling, na.rm = TRUE),
+           -sum(x == feeling, na.rm = TRUE))
+           
+  }
+}
+  
+d1 <- processed %>% 
+  group_by(more_group) %>% 
+  summarise(
+    #Jr_Mints_J = find_sum(`Junior Mints`, T),
+    #Jr_Mints_D = find_sum(`Junior Mints`, F),
+    `Junior Mints` = find_sum(`Junior Mints`, find_diff=T),
+
+    #Sr_Mints_J = find_sum(`Senior Mints`, T),
+    #Sr_Mints_D = find_sum(`Senior Mints`, F),
+    `Senior Mints` = find_sum(`Senior Mints`, find_diff=T),
+
+    #M_Kisses_J = find_sum(`Mint Kisses`, T),
+    #M_Kisses_D = find_sum(`Mint Kisses`, F),
+    `Mint Kisses` = find_sum(`Mint Kisses`, find_diff=T),
+
+    #M_Juleps_J = find_sum(`Mint Juleps`, T),
+    #M_Juleps_D = find_sum(`Mint Juleps`, F),
+    `Mint Juleps` = find_sum(`Mint Juleps`, find_diff=T),
+    
+    #M_Leaves_J = find_sum(`Mint Leaves`, T),
+    #M_Leaves_D = find_sum(`Mint Leaves`, F),
+    `Mint Leaves` = find_sum(`Mint Leaves`, find_diff=T),
+
+    #M_MM_J = find_sum(`Mint M&Ms`, T),
+    #M_MM_D = find_sum(`Mint M&Ms`, F),
+    `Mint M&Ms` = find_sum(`Mint M&Ms`, find_diff=T),
+        
+    #York_Peppermint_Patties_J = find_sum(`York Peppermint Patties`, T),
+    #York_Peppermint_Patties_D = find_sum(`York Peppermint Patties`, F),
+    `York Peppermint Patties` = find_sum(`York Peppermint Patties`, find_diff=T)
+  ) %>% 
+  gather(candy, score, -more_group)
+
+
+```
+
+```{r q1}
+d1_order <- d1 %>% 
+  filter(more_group == TRUE) %>% 
+  arrange(desc(score)) %>% 
+  .$candy %>% 
+  as.character()
+
+d1$candy <- factor(d1$candy, levels = d1_order)
+d1 %>% 
+  filter(!is.na(more_group)) %>% 
+  ggplot(aes(x = candy, y = score, color = more_group)) + 
+  geom_point(size = 4, alpha = 0.7) + 
+  xlab("") +
+  coord_flip() +
+  theme_bw()
+```
+
+From this plot, we can see that: 
+
+- surveyees who has predicted more mints in my hand (BLUE) in general finds more joy in mint candy than those who has predicted less mints in my hand (RED)
+- those who has predicted more mints (BLUE) find more joy in "Senior Mints" 
+- those who has predicted less mints (RED) find more joy in "Junior Mints"
+- the general feeling of mint candy is despair since 5 out 7 mint candy scores negatively
+
