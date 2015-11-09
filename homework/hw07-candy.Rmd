@@ -342,3 +342,37 @@ From this plot, we can see that:
 - those who has predicted less mints (RED) find more joy in "Junior Mints"
 - the general feeling of mint candy is despair since 5 out 7 mint candy scores negatively
 
+**Answer #1:** If one were to guess there is more mints in my hand, then in general yes you do feel more joy towards mint candy. 
+
+> 2. If you’re taking the survey late at night, do you guess there is more mints in my hand?
+
+Arbitrarily, I'm going to define "late at night" as between 11PM - 3AM.
+
+```{r}
+processed <- processed %>% 
+  mutate(nearest_hour = format(round(timestamp, units="hours"), format="%H:%M"),
+         late_night = nearest_hour %in% c("23:00", "00:00", "01:00", "02:00", "03:00"))
+```
+
+Here is when surveyees responded:
+```{r timestamp}
+processed %>% 
+  ggplot(aes(x = nearest_hour, y = ..count.., fill = late_night)) + 
+  geom_bar() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+```{r}
+processed %>% 
+  select(late_night, n_mints) %>% 
+  ggplot(aes(x = late_night, y = n_mints, fill = late_night)) +
+  geom_boxplot() + 
+  ylim(0, 20)
+```
+
+**Answer:** The answer looks to be no, if one was taking the survey late at night, one does not guess there is more mints in my hand. 
+
+> 3. Do people 40 or older feel more joy towards mint candy?
+
