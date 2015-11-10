@@ -30,7 +30,16 @@ _These notes are the difference between what I already know and what I find inte
 
 - [2015-10-27_cm101: stat547/reading file IO](classnotes/2015-10-27-cm101-stat547.Rmd)
 - [2015-10-29_cm102: regrex](classnotes/2015-10-29-cm102-regrex.md)
-- [2014-11-03_cm103: tidying data](2015-11-03-cm103-tidying-data.Rmd)
+- [2015-11-03_cm103: tidying data](2015-11-03-cm103-tidying-data.Rmd)
+- 2015-11-05_cm104: continue tidying candy data
+- 2015-11-10_cm105: build R package
+- 2015-11-12_cm106:
+- 2015-11-17_cm107:
+- 2015-11-19_cm108:
+- 2015-11-24_cm109:
+- 2015-11-26_cm110:
+- 2015-12-01_cm111:
+- 2015-12-02_cm112:
 
 ## Homework
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
@@ -38,3 +47,9 @@ _These notes are the difference between what I already know and what I find inte
 - Homework03: [manipulating and exploring data with dplyr and ggplot2](homework/hw03-dplyr.md)
 - Homework04: [split-apply-combine with your functions](homework/hw04-function.md)
 - Homework05: [factor, figure, hygiene](homework/hw05-hygiene.md)
+
+- Homework07: data wrangling
+- Homework08: 
+- Homework09:
+- Homework10:
+- Homework11:
