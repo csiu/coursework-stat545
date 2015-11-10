@@ -268,12 +268,15 @@ processed %>%
 From this table, we see that 21.3% of surveyees have a guess of 10 or more, 67.5% have a guess of less than 10, and 11.1% did not respond.
 
 **Preferences of each group**
-Here we summarize the preference of each group. Scoring is based on JOY = +1 and DESPAIR = -1.
+Here we summarize the preference of each group. Scoring is based on JOY = +1 and DESPAIR = -1 normalized by the number of people who voted.
 ```{r}
 find_sum <- function(x, is_joy=TRUE, find_diff=FALSE){
   if (find_diff) {
-    sum(x == "JOY", na.rm = TRUE) - sum(x == "DESPAIR", na.rm = TRUE)
+    ## THIS HERE WILL GIVE A SCORE OF (JOY-DESPAIR)/(NUMBER OF PEOPLE WHO VOTED)
+    (sum(x == "JOY", na.rm = TRUE) - sum(x == "DESPAIR", na.rm = TRUE)) / 
+      sum(x == "JOY" | x == "DESPAIR", na.rm = TRUE)
   } else {
+    ## THIS HERE WILL GIVE COUNT OF "JOY" OR "DESPAIR"
     feeling = ifelse(is_joy, "JOY", "DESPAIR")
     ifelse(is_joy, 
            sum(x == feeling, na.rm = TRUE),
@@ -285,37 +288,15 @@ find_sum <- function(x, is_joy=TRUE, find_diff=FALSE){
 d1 <- processed %>% 
   group_by(more_group) %>% 
   summarise(
-    #Jr_Mints_J = find_sum(`Junior Mints`, T),
-    #Jr_Mints_D = find_sum(`Junior Mints`, F),
     `Junior Mints` = find_sum(`Junior Mints`, find_diff=T),
-
-    #Sr_Mints_J = find_sum(`Senior Mints`, T),
-    #Sr_Mints_D = find_sum(`Senior Mints`, F),
     `Senior Mints` = find_sum(`Senior Mints`, find_diff=T),
-
-    #M_Kisses_J = find_sum(`Mint Kisses`, T),
-    #M_Kisses_D = find_sum(`Mint Kisses`, F),
     `Mint Kisses` = find_sum(`Mint Kisses`, find_diff=T),
-
-    #M_Juleps_J = find_sum(`Mint Juleps`, T),
-    #M_Juleps_D = find_sum(`Mint Juleps`, F),
     `Mint Juleps` = find_sum(`Mint Juleps`, find_diff=T),
-    
-    #M_Leaves_J = find_sum(`Mint Leaves`, T),
-    #M_Leaves_D = find_sum(`Mint Leaves`, F),
     `Mint Leaves` = find_sum(`Mint Leaves`, find_diff=T),
-
-    #M_MM_J = find_sum(`Mint M&Ms`, T),
-    #M_MM_D = find_sum(`Mint M&Ms`, F),
     `Mint M&Ms` = find_sum(`Mint M&Ms`, find_diff=T),
-        
-    #York_Peppermint_Patties_J = find_sum(`York Peppermint Patties`, T),
-    #York_Peppermint_Patties_D = find_sum(`York Peppermint Patties`, F),
     `York Peppermint Patties` = find_sum(`York Peppermint Patties`, find_diff=T)
   ) %>% 
   gather(candy, score, -more_group)
-
-
 ```
 
 ```{r q1}
@@ -328,21 +309,24 @@ d1_order <- d1 %>%
 d1$candy <- factor(d1$candy, levels = d1_order)
 d1 %>% 
   filter(!is.na(more_group)) %>% 
-  ggplot(aes(x = candy, y = score, color = more_group)) + 
-  geom_point(size = 4, alpha = 0.7) + 
+  ggplot(aes(x = candy, y = score, color = more_group, group = more_group)) + 
+  geom_point(size = 3.5, alpha = 0.7) + 
+  geom_line() + 
   xlab("") +
+  ylab("level of joy") +
   coord_flip() +
   theme_bw()
 ```
 
 From this plot, we can see that: 
 
-- surveyees who has predicted more mints in my hand (BLUE) in general finds more joy in mint candy than those who has predicted less mints in my hand (RED)
+- surveyees who has predicted more mints in my hand (BLUE) marginally finds more joy in 4 mint candies (Senior Mints, Mint Leaves, Mint Kisses, and Mint Juleps)
+- surveyees who has predicted less mints in my hand (RED) marginally finds more joy in 3 mint candies (Mint M&Ms, Junior Mints, and York Peppermint Patties)
 - those who has predicted more mints (BLUE) find more joy in "Senior Mints" 
 - those who has predicted less mints (RED) find more joy in "Junior Mints"
-- the general feeling of mint candy is despair since 5 out 7 mint candy scores negatively
+- the general feeling of mint candy is despair since 5 out 7 mint candy score negatively in the level of joy (where positive = joy and negative = despair)
 
-**Answer #1:** If one were to guess there is more mints in my hand, then in general yes you do feel more joy towards mint candy. 
+**Answer #1:** If one were to guess there is more mints in my hand, then in general yes you do feel marginally more joy towards mint candy. 
 
 > 2. If you’re taking the survey late at night, do you guess there is more mints in my hand?
 
@@ -359,6 +343,7 @@ Here is when surveyees responded:
 processed %>% 
   ggplot(aes(x = nearest_hour, y = ..count.., fill = late_night)) + 
   geom_bar() +
+  theme_bw() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
@@ -369,10 +354,86 @@ processed %>%
   select(late_night, n_mints) %>% 
   ggplot(aes(x = late_night, y = n_mints, fill = late_night)) +
   geom_boxplot() + 
-  ylim(0, 20)
+  stat_summary(fun.y = mean, geom="point", color="red", size=4, alpha=0.6) + 
+  ylim(0, 20) +
+  theme_bw()
 ```
+
+*Note: red dot denotes the mean*
 
 **Answer:** The answer looks to be no, if one was taking the survey late at night, one does not guess there is more mints in my hand. 
 
+Follow-up: What if I group by the nearest hour instead of late night?
+
+```{r}
+processed %>% 
+  select(nearest_hour, n_mints) %>% 
+  ggplot(aes(x = nearest_hour, y = n_mints)) +
+  geom_boxplot() + 
+  stat_summary(fun.y = mean, geom="point", color="red", size=3.5, alpha=0.6) + 
+  ylim(0, 20) + 
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5)
+  )
+```
+
+*Note: red dot denotes the mean*
+
+According to the figure, the guess in the number of mints in my hand doesn't really change according to when the survey was submitted.
+
 > 3. Do people 40 or older feel more joy towards mint candy?
+
+Recall the age of our surveyees:
+```{r}
+processed %>% 
+  ggplot(aes(x=age, y=..count..)) + 
+  geom_bar(binwidth=1, origin=-0.5) + 
+  geom_vline(xintercept=39.5, color="red", alpha=0.6) + 
+  annotate("text", x=10, y=225, label="fresh", size=10, color="grey60") +
+  annotate("text", x=59, y=225, label="ripe", size=10, color="grey60") +
+  theme_bw()
+```
+
+The horizontal line represents the split in our age groups: "ripe" for those 40 or older and "fresh" for those younger than 40.
+
+```{r}
+## get data
+d3 <- processed %>% 
+  mutate(age_grp = ifelse(age < 40, "fresh", "ripe")) %>% 
+  filter(!is.na(age_grp)) %>% 
+  group_by(age_grp) %>% 
+  summarise(
+    `Junior Mints` = find_sum(`Junior Mints`, find_diff=T),
+    `Senior Mints` = find_sum(`Senior Mints`, find_diff=T),
+    `Mint Kisses` = find_sum(`Mint Kisses`, find_diff=T),
+    `Mint Juleps` = find_sum(`Mint Juleps`, find_diff=T),
+    `Mint Leaves` = find_sum(`Mint Leaves`, find_diff=T),
+    `Mint M&Ms` = find_sum(`Mint M&Ms`, find_diff=T),
+    `York Peppermint Patties` = find_sum(`York Peppermint Patties`, find_diff=T)
+  ) %>% 
+  gather(candy, score, -age_grp)
+
+## reorder factor
+d3_order <- d3 %>% 
+  filter(age_grp == "ripe") %>% 
+  arrange(desc(score)) %>% 
+  .$candy %>% 
+  as.character()
+d3$candy <- factor(d3$candy, levels = d3_order)
+
+## plot
+d3 %>% 
+  ggplot(aes(x = candy, y = score, color = age_grp, group = age_grp)) + 
+  geom_point(size=3.5, alpha=0.6) + 
+  geom_line() + 
+  xlab("") + 
+  coord_flip() + 
+  theme_bw()
+```
+
+Out of the 7 mint candies, the ripe group feels more joy for 3 (Senior Mints, Junior Mints, and York Peppermint Patties) of them and the the fresh group feels more joy for 4 (Mint Leaves, Mint Kisses, Mint M&Ms, and Mint Juleps) of them. This therefore shows that ...
+
+**Answer**: No, people 40 or older does not feel more joy towards mint candy.
+
+> 4. Given the people who said they were old, are we able to predict their age given preference towards mint candy & the number of mints they guess?
 
