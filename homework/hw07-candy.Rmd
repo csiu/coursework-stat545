@@ -102,6 +102,17 @@ To do:
 - and keep only ages in valid ranges e.g. between 1 (i.e. don't want babies) - 116 (i.e. surveyee should be younger than the [oldest living person, Susannah Mushatt Jones, age 116](https://en.wikipedia.org/wiki/List_of_the_verified_oldest_people)).
 
 ```{r}
+## Save those that self report as old -- to be used later
+self_reported_as_old <- raw %>% 
+  mutate(age = tolower(age)) %>% 
+  filter(grepl("old", age),
+         !grepl("year[- ]old", age)
+         ) %>% 
+  select(user, age)
+```
+
+```{r}
+## Cleanup age data
 raw <- raw %>%
   mutate(age = tolower(age),
          age = plyr::mapvalues(age,
@@ -437,3 +448,119 @@ Out of the 7 mint candies, the ripe group feels more joy for 3 (Senior Mints, Ju
 
 > 4. Given the people who said they were old, are we able to predict their age given preference towards mint candy & the number of mints they guess?
 
+The following surveyees self reported they were "old". 
+```{r}
+(self_reported_as_old_users <- self_reported_as_old$user)
+```
+*(Note: You can scroll down to see their self reporting).*
+
+I want to know if I can predict their age given their preference towards the 7 mint candy & the number of mints they guess. To do this, I will split my data into `test_data` and `train_data`. The `test_data` contains the information of the surveyees who has self reported as "old". The `train_data` contains the information from the other surveyees.
+
+To make my life easier, I will disclude surveyees whose information contain NA for any of the 7 candies or the number of mints they guess.
+
+```{r}
+## Make life easier and drop users if they have NA in any of the 7 candies or NA in n_mints
+test_data <- processed %>% 
+  filter(user %in% self_reported_as_old_users,
+         !is.na(n_mints),
+         !is.na(`Junior Mints`),
+         !is.na(`Senior Mints`),
+         !is.na(`Mint Kisses`),
+         !is.na(`Mint Juleps`),
+         !is.na(`Mint Leaves`),
+         !is.na(`Mint M&Ms`),
+         !is.na(`York Peppermint Patties`)
+  )
+
+train_data <- processed %>% 
+  filter(!user %in% self_reported_as_old_users,
+         !is.na(age),
+         !is.na(n_mints),
+         !is.na(`Junior Mints`),
+         !is.na(`Senior Mints`),
+         !is.na(`Mint Kisses`),
+         !is.na(`Mint Juleps`),
+         !is.na(`Mint Leaves`),
+         !is.na(`Mint M&Ms`),
+         !is.na(`York Peppermint Patties`)
+  )  
+```
+
+**Size of train and test set**
+My training data has the following number of surveyees:
+```{r}
+nrow(train_data)
+```
+
+My test data has the following number of surveyees who has self reported as old:
+```{r}
+nrow(test_data)
+```
+
+**Train model**: The model I will employ is linear regression. This is chosen because it is easy to implement and it was seen in class before. 
+```{r}
+## Fit linear model
+fit <- lm(age ~ n_mints + `Junior Mints` + `Senior Mints` + `Mint Kisses` + 
+            `Mint Juleps` + `Mint Leaves` + `Mint M&Ms` + `York Peppermint Patties`, 
+          data=train_data)
+
+## Summarize results
+summary(fit)
+```
+
+To get and idea of error:
+
+- take difference between actual & predicted for each surveyee
+- square the difference for each surveyee
+- take sum of all squared differences
+- divide by number of surveyees to get an average squared
+- square root to remove squared term
+
+```{r}
+y_hat <- predict(fit, train_data)
+y     <- train_data$age
+
+## Estimate of error
+(err <- sqrt(sum((y - y_hat)^2) / length(y)))
+```
+
+**Prediction**: My model is not fitted/trained. I can now use it to predict on the test data.
+```{r}
+self_reported_as_old_predictions <- 
+  ## make model prediction
+  predict(fit, test_data) %>% 
+  
+  ## combine with test data to get user ID
+  cbind(test_data,
+        predicted_age = .) %>% 
+  select(user, predicted_age) %>% 
+  
+  ## join with 'self_reported_as_old' to original response to "age" variable (before cleanup)
+  left_join(., self_reported_as_old, by="user") %>% 
+  select(user, age, predicted_age)
+  
+self_reported_as_old_predictions %>% 
+  knitr::kable()
+```
+
+Distribution of surveyees who has self reported as old:
+```{r}
+self_reported_as_old_predictions %>% 
+  mutate(predicted_age = as.integer(predicted_age)) %>% ## convert to integer
+  
+  ## get count data
+  group_by(predicted_age) %>%  
+  summarise(count = length(predicted_age)) %>% 
+  
+  ## plot
+  ggplot(aes(x = predicted_age, y = count)) + 
+  geom_bar(stat="identity") +
+  scale_x_continuous(breaks = seq(30,40,1)) + 
+  theme_bw()
+```
+
+**Answer**: Overall, prediction is possible and most people who has self reported as old are predicted to be between 31 to 40 (+/- `r round(err)`); majority being 36.
+
+## Reflection 
+- tidying data is tedious
+- analysis took a fraction of the time tidying did
