@@ -48,7 +48,7 @@ _These notes are the difference between what I already know and what I find inte
 - Homework04: [split-apply-combine with your functions](homework/hw04-function.md)
 - Homework05: [factor, figure, hygiene](homework/hw05-hygiene.md)
 
-- Homework07: data wrangling
+- Homework07: [candy data wrangling](homework/hw07-candy.md)
 - Homework08: 
 - Homework09:
 - Homework10:

@@ -2,14 +2,16 @@
 title: 'hw07: Bring the Candy Survey data'
 author: "csiu"
 date: "November 8, 2015"
-output: html_document
+output: 
+    html_document:
+        keep_md: yes
 ---
 ```{r}
 knitr::opts_chunk$set(fig.path='figure/hw07-')
 options(knitr.table.format = 'markdown')
 ```
 
-I have clean up candy data here: 
+I have cleaned up candy data here: 
 
 - add [user id column](https://github.com/csiu/candyplay/blob/master/data-raw/02_add-user-column.md)
 - cleanup for [general factors](https://github.com/csiu/candyplay/blob/master/data-raw/03_tidy1.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/03_tidy1.csv)
@@ -22,14 +24,16 @@ I have clean up candy data here:
 I want to explore mints. 
 
 ----
+
 ## The questions:
 1. If you guess there is more mints in my hand, do you feel more joy towards mint candy?
 2. If you're taking the survey late at night, do you guess there is more mints in my hand?
 3. Do people 40 or older feel more joy towards mint candy?
-4. Given the people who said they were old, are we able to predict their age given preference towards mint candy & the number of mints they guess?
+4. Given the people who said they were old, are we able to predict their age given their preference towards mint candy & the number of mints they have guess?
 
 ## Data cleaning:
 Load packages:
+
 ```{r}
 library(readr)
 suppressPackageStartupMessages(library(tidyr))
@@ -43,18 +47,18 @@ Load raw data:
 raw <- read_csv("../data/candy-survey-2015.csv")
 ```
 
-Here are the columns of the raw data:
+Here are the column names in the raw data -- I will not be using all of them in my analysis.
 ```{r}
 colnames(raw)
 ```
 
-Find columns of interest for analyzing mint data e.g. time of response, age of surveyee, any candy with the word "mint" in it, and the guess of the number of mints in my hands.
+Here I find the columns of interest for analyzing mint data e.g. time of response, age of surveyee, any candy with the word "mint" in it, and the guess of the number of mints in my hands.
 ```{r}
 (columns_of_interest <- colnames(raw) %>% 
    grep("Timestamp|How old are you?|mint", ., value = TRUE, ignore.case = TRUE))
 ```
 
-**Cleanup `timestamp`** by re-reading the file & creating a new `user` id column
+**Cleanup `timestamp`** by re-reading the file plus creating a new `user` id column:
 ```{r}
 raw <- read_csv("../data/candy-survey-2015.csv",
                 col_types = cols(
@@ -64,11 +68,11 @@ raw <- raw %>%
   mutate(user = sprintf("ID-%04d", order(Timestamp)))
 ```
 
-Select and rename the columns of interest e.g. 
+The column names of the columns of interest are messy; here I select and rename the columns of interest for my use e.g. 
 
 - replacing "How old are you?" with "age"
 - replacing "Guess the number of mints in my hand." with "n_mints"
-- removing `[` and `]` 
+- removing `[` and `]` from the joy/despair candy columns
 
 ```{r}
 raw <- raw[,c("user", columns_of_interest)]
@@ -81,9 +85,10 @@ colnames(raw) <- gsub("^\\[|\\]$", "", colnames(raw))
 colnames(raw)
 ```
 
-**Cleanup `age`**, but first need to see what needs to be done:
+**Cleanup `age`**, but first we will need to see what there is to do:
 
 ```{r}
+## Find all non integer values in age column
 raw %>% 
   filter(!grepl("^\\d+$", age), !is.na(age)) %>% 
   mutate(age = tolower(age)) %>% 
@@ -94,7 +99,7 @@ raw %>%
 
 To do:
 
-- fix "37 (i’m taking a child)" and "42 - i’m taking my kid" by `grep`-ing for **taking** (Note those are the only instances of "taking") and keeping only the first 2 character in string
+- fix "37 (i’m taking a child)" and "42 - i’m taking my kid" by `grep`-ing for **taking** (Note those are the only instances of "taking") and keeping only the first 2 characters in the string
 - remove `,` and `:` from "37," and "46:"
 - replace "good lord! I’m 43!" with "43"
 - replace "40. deal with it.", "45, but the 8-year-old huntress and bediapered unicorn give me political cover and social respectability. however, i will eat more than they do combined.", and "50 (despair)" with only the first 2 characters in string
@@ -102,7 +107,7 @@ To do:
 - and keep only ages in valid ranges e.g. between 1 (i.e. don't want babies) - 116 (i.e. surveyee should be younger than the [oldest living person, Susannah Mushatt Jones, age 116](https://en.wikipedia.org/wiki/List_of_the_verified_oldest_people)).
 
 ```{r}
-## Save those that self report as old -- to be used later
+## Save the user-id of those that self report as old -- to be used later
 self_reported_as_old <- raw %>% 
   mutate(age = tolower(age)) %>% 
   filter(grepl("old", age),
@@ -141,23 +146,31 @@ raw <- raw %>%
   )
 ```
 
-The distribution of the ages:
-```{r ages}
+In the tidy data, here is the distribution of the ages:
+```{r distribution-ages}
 raw %>% 
   ggplot(aes(x = age, y = ..count..)) + 
-  geom_bar(binwidth=1)
+  geom_bar(binwidth=1) + 
+  xlab("Age of surveyees") +
+  ylab("Number of surveyees")
 ```
 
-Here is a summary:
+Here is a summary of the tidy age data:
 ```{r}
 summary(raw$age) %>% 
   broom::tidy()
 ```
 
+- Comments:
+    - `r sum(!is.na(raw$age))` out of `r nrow(raw)` (`r sprintf('%0.0f%%', sum(!is.na(raw$age)) / nrow(raw) * 100)`) of surveyess has filled in the "age" field with a valid age
+    - the youngest surveyee is 5
+    - the oldest surveyee is 115 -- according the [List of the verified oldest people](https://en.wikipedia.org/wiki/List_of_the_verified_oldest_people), this entry could refer to [Emma Morano](https://en.wikipedia.org/wiki/Emma_Morano) of Italy, [Violet Brown](https://en.wikipedia.org/wiki/Violet_Brown) of Jamaica, and [Nabi Tajima](https://en.wikipedia.org/wiki/Nabi_Tajima) of Japan... but I am pessimistic of the reliability of this information
+    - most surveyee are in the range of 30 to 35
 
-**Cleanup `n_mints`**, but first need to see what needs to be done:
-
+**Cleanup `n_mints`**, but first we will need to see what there is to do:
 ```{r}
+## Find all non integer values in n_mints column
+## Need to remove underscore so markdown table renders properly
 raw %>%
   filter(!grepl("^\\d+$", n_mints), !is.na(n_mints), !grepl("_", n_mints)) %>% 
   mutate(n_mints = tolower(n_mints)) %>% 
@@ -177,6 +190,7 @@ To do:
 - Replacing negative integers with NA (since this is count data)
 
 ```{r}
+## Cleanup n_mints data
 raw <- raw %>%
   mutate(
     n_mints = tolower(n_mints),
@@ -206,13 +220,13 @@ raw <- raw %>%
   )
 ```
 
-Here is a summary of the guesses.
+Here is a summary of the guesses to the number of mints in my hand:
 ```{r}
-summary(raw$n_mints) %>% 
-  broom::tidy()
+(n_mints_summary <- summary(raw$n_mints) %>% 
+  broom::tidy())
 ```
 
-These people guest the greatest number of mints:
+Here is the list of the top 10 surveyee with the largest guess for the number of mints in my hand:
 ```{r}
 raw %>% 
   select(user, n_mints) %>% 
@@ -221,21 +235,44 @@ raw %>%
   knitr::kable()
 ```
 
-The distribution of mint guesses from 0 to 100 -- most people guess between 0 - 5 mints.
-```{r mints}
+Here is the distribution of guesses of number of mints in my hand from 0 to 100:
+```{r distribution-mints}
 raw %>% 
   ggplot(aes(x = n_mints, y = ..count..)) + 
-  geom_bar(binwidth=5) +
-  xlim(0,100)
+  geom_bar(binwidth=1, origin=-.5) +
+  geom_vline(xintercept = c(n_mints_summary$q1,
+                            n_mints_summary$median,
+                            n_mints_summary$q3), 
+             color = "red", alpha = 0.6) + 
+  xlim(0,100) +
+  xlab("Guess for the number of mints in my hand") + 
+  ylab("Number of surveyees for a particular guess")
 ```
 
-At this point I have, 
+Here the red line refers to the 1st quartile, 2nd quartile (median), and 3rd quartile.
+
+```{r}
+## Determine what that guess is for the peak for n_mint > 25, count > 100
+raw %>% 
+  group_by(n_mints) %>% 
+  summarise(count = length(n_mints)) %>% 
+  ungroup() %>% 
+  filter(n_mints > 25, count > 100)
+```
+
+- Comments:
+    - A lot of people guess of less than 10
+    - Most people guess between 3 to 9 mints
+    - The largest guess was 1 billion -- I think this surveyee was joking when they made their guess
+    - There is also a weird peak where 133 surveyee guess 42 mints in my hand 
+    
+**Summary:** At this point I have, 
 
 - created user ids
 - cleaned the timestamp
 - cleaned the ages
 - cleaned the guess of mints in my hand
-- renamed the headers for the candy data and am keeping the despair and joy for candy data
+- renamed the headers for the candy data and am keeping the despair and joy values for candy data
 
 ```{r}
 processed <- raw
@@ -247,8 +284,8 @@ Now that the data is clean, we can answer the questions posed previously.
 
 > 1. If you guess there is more mints in my hand, do you feel more joy towards mint candy?
 
-**Figuring out how many mints is "more mints"**
-```{r mints_gess, fig.keep='last'}
+**Figuring out how many mints is "more mints"**. We will do this by looking at the quartiles in a boxplot. Because the top guess is 1 billion, I will need to "zoom in" to the window where the majority of the data is. I will also allow the warning to show to tell me how many guesses are not shown in the figure.
+```{r q1-boxplot-guess-of-mints, fig.keep='last'}
 processed %>% 
   select(n_mints) %>% 
   gather(factor,guess) %>% 
@@ -257,14 +294,15 @@ processed %>%
   ylim(0,100) +
   xlab("") + 
   coord_flip()
+  
 
 summary(processed$n_mints) %>% 
 broom::tidy()
 ```
 
-From the boxplot and 3rd quantile, we see that most people guess there are less than 10 mints in my hand. (From the warning we can also see that 707 surveyees predicted more than 100 mints.) We will thus divide the surveyees into 2 groups: those with guesses less than 10, and those with guesses 10 or more. 
+Looking at the boxplot and 3rd quartile, we see that most people have a guess of less than 10 mints in my hand. (From the warning we can also see that 707 surveyees predicted more than 100 mints.) We will thus divide the surveyees into 2 groups: those with guesses less than 10, and those with guesses 10 or more. 
 
-**The groupings**
+**Segregating the groupings.**
 ```{r}
 processed <- processed %>% 
   mutate(more_group = n_mints >= 10)
@@ -278,9 +316,10 @@ processed %>%
 
 From this table, we see that 21.3% of surveyees have a guess of 10 or more, 67.5% have a guess of less than 10, and 11.1% did not respond.
 
-**Preferences of each group**
-Here we summarize the preference of each group. Scoring is based on JOY = +1 and DESPAIR = -1 normalized by the number of people who voted.
-```{r}
+**Looking at the preferences of each group.**
+Here we summarize the preference of each mint candy for each group based on the scoring where JOY = +1 and DESPAIR = -1 normalized by the number of surveyee.
+```{r q1-mint-candy-scores}
+## Helper function -- because I'm awesome
 find_sum <- function(x, is_joy=TRUE, find_diff=FALSE){
   if (find_diff) {
     ## THIS HERE WILL GIVE A SCORE OF (JOY-DESPAIR)/(NUMBER OF PEOPLE WHO VOTED)
@@ -292,10 +331,10 @@ find_sum <- function(x, is_joy=TRUE, find_diff=FALSE){
     ifelse(is_joy, 
            sum(x == feeling, na.rm = TRUE),
            -sum(x == feeling, na.rm = TRUE))
-           
   }
 }
-  
+ 
+## Summarize the score for each mint candy 
 d1 <- processed %>% 
   group_by(more_group) %>% 
   summarise(
@@ -308,16 +347,16 @@ d1 <- processed %>%
     `York Peppermint Patties` = find_sum(`York Peppermint Patties`, find_diff=T)
   ) %>% 
   gather(candy, score, -more_group)
-```
 
-```{r q1}
+## Reorder factor based on score of the more_group
 d1_order <- d1 %>% 
   filter(more_group == TRUE) %>% 
   arrange(desc(score)) %>% 
   .$candy %>% 
   as.character()
-
 d1$candy <- factor(d1$candy, levels = d1_order)
+
+## Plot
 d1 %>% 
   filter(!is.na(more_group)) %>% 
   ggplot(aes(x = candy, y = score, color = more_group, group = more_group)) + 
@@ -331,8 +370,8 @@ d1 %>%
 
 From this plot, we can see that: 
 
-- surveyees who has predicted more mints in my hand (BLUE) marginally finds more joy in 4 mint candies (Senior Mints, Mint Leaves, Mint Kisses, and Mint Juleps)
-- surveyees who has predicted less mints in my hand (RED) marginally finds more joy in 3 mint candies (Mint M&Ms, Junior Mints, and York Peppermint Patties)
+- surveyees who has predicted more mints in my hand (BLUE) marginally finds more joy in 4 mint candies (i.e. Senior Mints, Mint Leaves, Mint Kisses, and Mint Juleps)
+- surveyees who has predicted less mints in my hand (RED) marginally finds more joy in 3 mint candies (i.e. Mint M&Ms, Junior Mints, and York Peppermint Patties)
 - those who has predicted more mints (BLUE) find more joy in "Senior Mints" 
 - those who has predicted less mints (RED) find more joy in "Junior Mints"
 - the general feeling of mint candy is despair since 5 out 7 mint candy score negatively in the level of joy (where positive = joy and negative = despair)
@@ -341,7 +380,7 @@ From this plot, we can see that:
 
 > 2. If you’re taking the survey late at night, do you guess there is more mints in my hand?
 
-Arbitrarily, I'm going to define "late at night" as between 11PM - 3AM.
+Arbitrarily, I'm going to define "late at night" as being between 11PM - 3AM.
 
 ```{r}
 processed <- processed %>% 
@@ -349,53 +388,83 @@ processed <- processed %>%
          late_night = nearest_hour %in% c("23:00", "00:00", "01:00", "02:00", "03:00"))
 ```
 
-Here is when surveyees responded:
-```{r timestamp}
+Here is the distribution of when surveyees submitted their surveys:
+```{r q1-distribution-timestamp}
 processed %>% 
   ggplot(aes(x = nearest_hour, y = ..count.., fill = late_night)) + 
   geom_bar() +
+  scale_fill_manual(values = c("darkgoldenrod1", "navy")) +
   theme_bw() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 ```
 
-```{r}
+Here we plot the boxplot of guesses group by survey submitted at late night or not:
+
+```{r q1-boxplot-nmints-latenight, warning=FALSE}
 processed %>% 
   select(late_night, n_mints) %>% 
   ggplot(aes(x = late_night, y = n_mints, fill = late_night)) +
-  geom_boxplot() + 
-  stat_summary(fun.y = mean, geom="point", color="red", size=4, alpha=0.6) + 
-  ylim(0, 20) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("darkgoldenrod1", "navy")) +
+  coord_cartesian(ylim= c(0,20)) +
   theme_bw()
 ```
 
-*Note: red dot denotes the mean*
+```{r}
+## Summarize distribution of guesses between late night vs not
+processed %>% 
+  group_by(late_night) %>% 
+  summarise(
+    n = length(n_mints),
+    minimum = summary(n_mints) %>% broom::tidy %>% .$minimum,
+    q1 = summary(n_mints) %>% broom::tidy() %>% .$q1,
+    median = summary(n_mints) %>% broom::tidy() %>% .$median,
+    mean = summary(n_mints) %>% broom::tidy() %>% .$mean,
+    q3 = summary(n_mints) %>% broom::tidy() %>% .$q3,
+    maximum = summary(n_mints) %>% broom::tidy() %>% .$maximum
+    ) %>% 
+  knitr::kable()
+```
 
-**Answer:** The answer looks to be no, if one was taking the survey late at night, one does not guess there is more mints in my hand. 
+- Comments:
+    - There is a lot less people (369 vs 5289) submitting the survey in the late night between 11 PM - 3 AM
+    - The 1 billion guess was submitted not in the late night, this likely caused the mean to be pulled up to 218,500 (vs. mean of 31,730 in the late night when the largest guess was 9,723,000)
+    - The median were the same between the two groups
+    - Looking at the quartiles, we see the majority of guesses was between 3-8 for late night and 3-9 for not late night. This means that ...
+    
+**Answer #2:** The answer looks to be no, if one was taking the survey late at night, one does not guess there is more mints in my hand. 
 
 Follow-up: What if I group by the nearest hour instead of late night?
 
-```{r}
-processed %>% 
-  select(nearest_hour, n_mints) %>% 
-  ggplot(aes(x = nearest_hour, y = n_mints)) +
-  geom_boxplot() + 
-  stat_summary(fun.y = mean, geom="point", color="red", size=3.5, alpha=0.6) + 
-  ylim(0, 20) + 
+```{r q2-boxplot-groupby-hour, warning=FALSE}
+d2 <- processed %>% 
+  mutate(late_night_color = ifelse(late_night, "navy", "darkgoldenrod1")) %>% 
+  group_by(nearest_hour) %>% 
+  summarise(late_night_color = unique(late_night_color))
+
+gg_d2hr <- processed %>% 
+  ggplot(aes(x = nearest_hour, y = n_mints, fill = nearest_hour)) +
+  geom_boxplot(show_guide = FALSE) + 
+  scale_fill_manual(values = d2$late_night_color) +
+  scale_y_continuous(labels = scales::comma) +
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5)
   )
+
+cowplot::plot_grid(gg_d2hr + xlab(""),
+                   gg_d2hr + coord_cartesian(ylim= c(0,30)),
+                   nrow = 2,
+                   align = "v")
 ```
 
-*Note: red dot denotes the mean*
-
-According to the figure, the guess in the number of mints in my hand doesn't really change according to when the survey was submitted.
+Here we see that the crazy 1 billion guess was made around 7 PM and also the guess in the number of mints in my hand doesn't really change according to when the survey was submitted.
 
 > 3. Do people 40 or older feel more joy towards mint candy?
 
-Recall the age of our surveyees:
-```{r}
+**Define the groups.** Recall the distribution of ages of our surveyees:
+```{r q3-distribution-age-group}
 processed %>% 
   ggplot(aes(x=age, y=..count..)) + 
   geom_bar(binwidth=1, origin=-0.5) + 
@@ -405,9 +474,10 @@ processed %>%
   theme_bw()
 ```
 
-The horizontal line represents the split in our age groups: "ripe" for those 40 or older and "fresh" for those younger than 40.
+Here we added a horizontal line to represent the split in our age groups: "ripe" for those 40 or older and "fresh" for those younger than 40.
 
-```{r}
+**Looking at the preferences of each group.** Here we summarize the preference of each mint candy for each group based on the scoring where JOY = +1 and DESPAIR = -1 normalized by the number of surveyee.
+```{r q3-mint-candy-scores-byage}
 ## get data
 d3 <- processed %>% 
   mutate(age_grp = ifelse(age < 40, "fresh", "ripe")) %>% 
@@ -442,21 +512,23 @@ d3 %>%
   theme_bw()
 ```
 
-Out of the 7 mint candies, the ripe group feels more joy for 3 (Senior Mints, Junior Mints, and York Peppermint Patties) of them and the the fresh group feels more joy for 4 (Mint Leaves, Mint Kisses, Mint M&Ms, and Mint Juleps) of them. This therefore shows that ...
+Out of the 7 mint candies, the ripe group feels more joy for 3 (i.e. Senior Mints, Junior Mints, and York Peppermint Patties) of them and the the fresh group feels more joy for 4 (i.e. Mint Leaves, Mint Kisses, Mint M&Ms, and Mint Juleps) of them. This therefore shows that ...
 
-**Answer**: No, people 40 or older does not feel more joy towards mint candy.
+**Answer #3**: No, people 40 or older does not feel more joy towards mint candy.
 
 > 4. Given the people who said they were old, are we able to predict their age given preference towards mint candy & the number of mints they guess?
 
-The following surveyees self reported they were "old". 
+The following surveyees self reported as "old". 
 ```{r}
 (self_reported_as_old_users <- self_reported_as_old$user)
 ```
-*(Note: You can scroll down to see their self reporting).*
+*(Note: You can scroll down to the table below to see the text of their self reporting).*
 
-I want to know if I can predict their age given their preference towards the 7 mint candy & the number of mints they guess. To do this, I will split my data into `test_data` and `train_data`. The `test_data` contains the information of the surveyees who has self reported as "old". The `train_data` contains the information from the other surveyees.
+**The question:** I want to know if I can predict their age given their preference towards the 7 mint candies & the number of mints they guess.
 
-To make my life easier, I will disclude surveyees whose information contain NA for any of the 7 candies or the number of mints they guess.
+**The method:** To do this, I will split my data into `test_data` and `train_data`. The `test_data` contains the information of the surveyees who has self reported as "old". The `train_data` contains the information from the other surveyees. With these groupings, I can then do supervised machine learning to predict the ages of the `test_data`.
+
+To make my life easier, I will disclude surveyees whose information is not complete (e.g. contain NA for any of the 7 candies or the number of mints they guess).
 
 ```{r}
 ## Make life easier and drop users if they have NA in any of the 7 candies or NA in n_mints
@@ -474,7 +546,7 @@ test_data <- processed %>%
 
 train_data <- processed %>% 
   filter(!user %in% self_reported_as_old_users,
-         !is.na(age),
+         !is.na(age), ## ages of training data should also not be NA
          !is.na(n_mints),
          !is.na(`Junior Mints`),
          !is.na(`Senior Mints`),
@@ -487,6 +559,7 @@ train_data <- processed %>%
 ```
 
 **Size of train and test set**
+
 My training data has the following number of surveyees:
 ```{r}
 nrow(train_data)
@@ -508,13 +581,13 @@ fit <- lm(age ~ n_mints + `Junior Mints` + `Senior Mints` + `Mint Kisses` +
 summary(fit)
 ```
 
-To get and idea of error:
+To get and idea of error, I will:
 
-- take difference between actual & predicted for each surveyee
+- take the difference between the actual & predicted age for each surveyee of the train set
 - square the difference for each surveyee
-- take sum of all squared differences
-- divide by number of surveyees to get an average squared
-- square root to remove squared term
+- take the sum of all squared differences
+- divide by the number of surveyees to get an average squared error
+- and finally do a square root to remove squared term from the average squared error
 
 ```{r}
 y_hat <- predict(fit, train_data)
@@ -524,7 +597,7 @@ y     <- train_data$age
 (err <- sqrt(sum((y - y_hat)^2) / length(y)))
 ```
 
-**Prediction**: My model is not fitted/trained. I can now use it to predict on the test data.
+**Prediction**: Now that my model is fitted/trained, I can now use it to predict the ages on the test data.
 ```{r}
 self_reported_as_old_predictions <- 
   ## make model prediction
@@ -544,7 +617,7 @@ self_reported_as_old_predictions %>%
 ```
 
 Distribution of surveyees who has self reported as old:
-```{r}
+```{r q4-distribution-of-predicted-ages}
 self_reported_as_old_predictions %>% 
   mutate(predicted_age = as.integer(predicted_age)) %>% ## convert to integer
   
@@ -557,10 +630,21 @@ self_reported_as_old_predictions %>%
   geom_bar(stat="identity") +
   scale_x_continuous(breaks = seq(30,40,1)) + 
   theme_bw()
+
+## Summary
+self_reported_as_old_predictions$predicted_age %>% 
+  summary() %>% 
+  broom::tidy() %>% 
+  knitr::kable()
 ```
 
-**Answer**: Overall, prediction is possible and most people who has self reported as old are predicted to be between 31 to 40 (+/- `r round(err)`); majority being 36.
+**Answer #4**: Overall, the prediction is possible and most people who has self reported as old are predicted to be between 31 to 40 (+/- `r round(err)`); majority being 36.
 
 ## Reflection 
-- tidying data is tedious
-- analysis took a fraction of the time tidying did
+- Tidying data is tedious
+- The analysis step took a fraction of the time the tidying step did
+- There is a general feeling of despair associated towards mint candy
+- If you guess there is more mint candy in my hand, you are marginally more likely to feel joy towards mint candy than those that have guess less
+- If you taking the survey at night, you are not likely to guess there are more mints in my hand
+- If you are 40 or older, you are not likely to feel more joy towards mint candy
+- Most people who self reported as old are between 35 - 40
