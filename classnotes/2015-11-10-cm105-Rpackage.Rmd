@@ -1,0 +1,108 @@
+---
+title: "Build R package"
+author: "csiu"
+date: "November 10, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+
+- [lecture outline](http://stat545-ubc.github.io/cm105_packages.html)
+
+- resource for R packages by Hadley Wickham: http://r-pkgs.had.co.nz
+
+- "install package into library"
+
+```{r}
+R.home() ## main directory where R lib is
+
+.Library      ## default library which ships with R
+dir(.Library) ## the packages which ships with R
+
+.libPaths() ## other library path; default is first one
+
+# readLines("~/.Renviron")
+# R_LIBS=       ## path of other libs
+# GITHUB_TOKEN= ## access github API from R
+# GITHUB_PAT=   ## ditto
+# NOT_CRAN=true
+```
+
+- Content of R package
+    - `man/` 
+    - `R/` - .R files
+    - `src/` - c/c++/other scripts
+    - `test/`
+    - `inst` - catch all ... files which ship with package
+
+- How do installed packages get into memory
+    - Build & Reload
+    - `load_all()`
+    - `library()`, for when package live in default library
+    
+- Your first devtools
+
+| function | info |
+|:--------:|:----:|
+| `devtools::create()` | setup a new package |
+| `devtools::document()` | wrapper that uses `roxygen2` to make formal documentation and NAMESPACE | 
+| RStudio Build & Reload ; `devtools::load_all()` | allow you to use package & see how things are going | 
+
+
+- ensure has R package development correctly setup
+```{r}
+devtools::has_devel()
+```
+
+## Build my first R package
+```{r eval=FALSE}
+devtools::create("~/tmp/yoh")
+
+# Creating package yoh in /Users/csiu/tmp
+# No DESCRIPTION found. Creating with values:
+# 
+# 
+# Package: yoh
+# Title: What the Package Does (one line, title case)
+# Version: 0.0.0.9000
+# Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+# Description: What the package does (one paragraph).
+# Depends: R (>= 3.2.2)
+# License: What license is it under?
+# LazyData: true
+# Adding RStudio project file to yoh
+```
+
+File layout
+```
+[Tue Nov 10 10:46:22]~/tmp/yoh/$ tree
+-- .
+   |-- .gitignore
+   |-- .Rbuildignore
+   |-- DESCRIPTION
+   |-- NAMESPACE
+   |-- R
+   |-- yoh.Rproj
+```
+
+@DESCRIPTION
+```
+Package: yoh
+Title: What the Package Does (one line, title case)
+Version: 0.0.0.9000
+Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends: R (>= 3.2.2)
+License: What license is it under?
+LazyData: true
+```
+
+@NAMESPACE
+```
+exportPattern("^[^\\.]")
+```
+
+- first thing to do (after opening RProject in RStudio) put under version control (then need to restart RStudio)
+```{r eval=FALSE}
+devtools::use_git()
+```
