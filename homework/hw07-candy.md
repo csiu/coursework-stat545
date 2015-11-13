@@ -1225,6 +1225,7 @@ self_reported_as_old_predictions %>%
   ggplot(aes(x = predicted_age, y = count)) + 
   geom_bar(stat="identity") +
   scale_x_continuous(breaks = seq(30,40,1)) + 
+  xlab('predicted age of those who self report as "old"') + 
   theme_bw()
 ```
 
