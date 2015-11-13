@@ -836,10 +836,12 @@ d1 %>%
   ggplot(aes(x = candy, y = score, color = more_group, group = more_group)) + 
   geom_point(size = 3.5, alpha = 0.7) + 
   geom_line() + 
+  scale_color_manual(values = c("darkseagreen3", "darkgreen")) +
   xlab("") +
   ylab("level of joy") +
   coord_flip() +
-  theme_bw()
+  theme_bw() +
+  theme(legend.justification=c(1,1), legend.position=c(1,1))
 ```
 
 ![](figure/hw07-q1-mint-candy-scores-1.png) 
@@ -1005,9 +1007,11 @@ d3 %>%
   ggplot(aes(x = candy, y = score, color = age_grp, group = age_grp)) + 
   geom_point(size=3.5, alpha=0.6) + 
   geom_line() + 
+  scale_color_manual(values = c("pink", "brown")) + 
   xlab("") + 
   coord_flip() + 
-  theme_bw()
+  theme_bw() + 
+  theme(legend.justification=c(1,1), legend.position=c(1,1))
 ```
 
 ![](figure/hw07-q3-mint-candy-scores-byage-1.png) 
