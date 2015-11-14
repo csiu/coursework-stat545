@@ -1261,7 +1261,7 @@ self_reported_as_old_predictions$predicted_age %>%
 ----
 ## [ASIDE]: Candy data art
 
-> **The opinions of 1K towards 7 mint candy**
+> **The opinions of 1000 people toward 7 mint candies**
 
 Because this is **art**, I'm going to the interpretation up to you ;)
 
@@ -1331,8 +1331,10 @@ gridExtra::grid.arrange(gp1, gp2, ncol=1,heights=c(1.7/10,8.3/10))
 
 ![](figure/hw07-art-1.png) 
 
-- reference: [Cluster data in heat map in R ggplot](http://stackoverflow.com/questions/25528059/cluster-data-in-heat-map-in-r-ggplot)
-- reference: [Using the ggdendro package to plot dendrograms](https://cran.r-project.org/web/packages/ggdendro/vignettes/ggdendro.html)
-- reference: [ggplot2 and ggdendro - plotting color bars under the node leaves](http://stackoverflow.com/questions/19926697/ggplot2-and-ggdendro-plotting-color-bars-under-the-node-leaves)
-- reference: [removing all the space between two ggplots combined with grid.arrange](http://stackoverflow.com/questions/15556068/removing-all-the-space-between-two-ggplots-combined-with-grid-arrange)
-- reference: [Legends in ggplot2](http://cookbook-r.com/Graphs/Legends_(ggplot2)/)
+**References for the art piece**
+
+- [Cluster data in heat map in R ggplot](http://stackoverflow.com/questions/25528059/cluster-data-in-heat-map-in-r-ggplot)
+- [Using the ggdendro package to plot dendrograms](https://cran.r-project.org/web/packages/ggdendro/vignettes/ggdendro.html)
+- [ggplot2 and ggdendro - plotting color bars under the node leaves](http://stackoverflow.com/questions/19926697/ggplot2-and-ggdendro-plotting-color-bars-under-the-node-leaves)
+- [removing all the space between two ggplots combined with grid.arrange](http://stackoverflow.com/questions/15556068/removing-all-the-space-between-two-ggplots-combined-with-grid-arrange)
+- [Legends in ggplot2](http://cookbook-r.com/Graphs/Legends_(ggplot2)/)
