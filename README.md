@@ -32,8 +32,8 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-10-29_cm102: regrex](classnotes/2015-10-29-cm102-regrex.md)
 - [2015-11-03_cm103: tidying data](2015-11-03-cm103-tidying-data.Rmd)
 - 2015-11-05_cm104: continue tidying candy data
-- 2015-11-10_cm105: [build R package](classnotes/2015-11-10-cm105-Rpackage.Rmd)
-- 2015-11-12_cm106:
+- [2015-11-10_cm105: build R package](classnotes/2015-11-10-cm105-Rpackage.Rmd)
+- [2015-11-12_cm106: build R package pt 2](classnotes/2015-11-12-cm106-rpkg2.md)
 - 2015-11-17_cm107:
 - 2015-11-19_cm108:
 - 2015-11-24_cm109:
