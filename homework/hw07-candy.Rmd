@@ -39,6 +39,8 @@ library(readr)
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(dplyr))
 library(ggplot2)
+library(ggdendro)
+library(viridis)
 ```
 
 Load raw data:
@@ -653,3 +655,79 @@ self_reported_as_old_predictions$predicted_age %>%
 - If you taking the survey at night, you are not likely to guess there are more mints in my hand
 - If you are 40 or older, you are not likely to feel more joy towards mint candy
 - Most people who self reported as old are between 35 - 40
+
+----
+## [ASIDE]: Candy data art
+
+> **The opinions of 1K towards 7 mint candy**
+
+Because this is **art**, I'm going to the interpretation up to you ;)
+```{r art, fig.height=6, fig.width=5}
+## get data
+set.seed(492)
+xdf <- processed[,grep("^[A-Z]|^user$", colnames(processed), value = TRUE)] %>%
+  sample_n(1000)
+
+## save a copy for plotting
+xdf2 <- xdf %>%
+  gather(candy, feeling, -user) 
+xdf2[is.na(xdf2)] <- "NA"
+xdf2$feeling <- factor(xdf2$feeling, levels = c("DESPAIR", "NA", "JOY"))
+
+## turn into int matrix
+xdf[xdf == "JOY"] <- 1L
+xdf[xdf == "DESPAIR"] <- -1L
+xdf[is.na(xdf)] <- 0L
+xdf <- xdf %>% select(-user) %>% as.matrix() %>% apply(., 2, as.integer)
+## cluster
+hclust_user <- xdf %>% dist()  %>% hclust()
+hclust_candy <- xdf %>% t() %>% dist() %>% hclust()
+
+## reorder factors
+xdf2$user <- factor(xdf2$user, levels = xdf2$user[hclust_user$order])
+xdf2$candy <- factor(xdf2$candy, levels = levels(xdf2$candy)[hclust_candy$order])
+
+## dendrogram
+ddata <- hclust_candy %>% 
+  as.dendrogram() %>% 
+  dendro_data(., type = "rectangle") 
+ggden <- ggplot(segment(ddata)) + 
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + 
+  theme_dendro() +
+  theme(plot.margin=grid::unit(c(0.5,1,-0.3,1), "cm"))
+
+## heatmap
+gg <- xdf2 %>%
+  ggplot(aes(x = candy, y = user, fill = feeling)) +
+  geom_tile() +
+  scale_fill_viridis(discrete = TRUE, guide = guide_legend(reverse=TRUE)) +
+  xlab("") +
+  ylab("The Opinions of 1000 People") + 
+  theme(
+    axis.title.y = element_text(color = "grey50", vjust = -0.5, hjust = 0),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1, colour = "black"),
+    plot.margin=grid::unit(c(-0.5,1,0.1,1), "cm"),
+    legend.title=element_blank(),
+    legend.direction="horizontal",
+    legend.justification=c(1,1.9),
+    legend.position=c(1,0)
+  )
+
+## stitching dendrogram with heatmap
+gp1<-ggplotGrob(ggden)
+gp2<-ggplotGrob(gg)
+
+maxWidth = grid::unit.pmax(gp1$widths[2:5], gp2$widths[2:5])
+gp1$widths[2:5] <- as.list(maxWidth)
+gp2$widths[2:5] <- as.list(maxWidth)
+
+gridExtra::grid.arrange(gp1, gp2, ncol=1,heights=c(1.7/10,8.3/10))
+```
+
+- reference: [Cluster data in heat map in R ggplot](http://stackoverflow.com/questions/25528059/cluster-data-in-heat-map-in-r-ggplot)
+- reference: [Using the ggdendro package to plot dendrograms](https://cran.r-project.org/web/packages/ggdendro/vignettes/ggdendro.html)
+- reference: [ggplot2 and ggdendro - plotting color bars under the node leaves](http://stackoverflow.com/questions/19926697/ggplot2-and-ggdendro-plotting-color-bars-under-the-node-leaves)
+- reference: [removing all the space between two ggplots combined with grid.arrange](http://stackoverflow.com/questions/15556068/removing-all-the-space-between-two-ggplots-combined-with-grid-arrange)
+- reference: [Legends in ggplot2](http://cookbook-r.com/Graphs/Legends_(ggplot2)/)
