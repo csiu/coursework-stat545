@@ -35,7 +35,7 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-11-10_cm105: build R package](classnotes/2015-11-10-cm105-Rpackage.Rmd)
 - [2015-11-12_cm106: build R package pt 2](classnotes/2015-11-12-cm106-rpkg2.md)
 - [2015-11-17_cm107: make](classnotes/2015-11-17-cm107-make.md)
-- 2015-11-19_cm108:
+- [2015-11-19_cm108: make part2](classnotes/2015-11-19-cm108-make2.md)
 - 2015-11-24_cm109:
 - 2015-11-26_cm110:
 - 2015-12-01_cm111:
