@@ -26,7 +26,7 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-10-20_cm013: graphing tips](classnotes/2015-10-20-cm013-graphing-tips.md)
 - [2015-10-22_cm014: Guest lecture: Tamara Munzner](classnotes/2015-10-22-cm014-tamara.md)
 
-**stat547**
+**STAT547M**
 
 - [2015-10-27_cm101: stat547/reading file IO](classnotes/2015-10-27-cm101-stat547.Rmd)
 - [2015-10-29_cm102: regrex](classnotes/2015-10-29-cm102-regrex.md)
@@ -42,11 +42,15 @@ _These notes are the difference between what I already know and what I find inte
 - 2015-12-02_cm112:
 
 ## Homework
+**STAT545**
+
 - Homework01: *This file* + [reflection](homework/hw01-reflection.md)
 - Homework02: [exploring gapminder and using rmd](homework/hw02-gapminder-rmd.md)
 - Homework03: [manipulating and exploring data with dplyr and ggplot2](homework/hw03-dplyr.md)
 - Homework04: [split-apply-combine with your functions](homework/hw04-function.md)
 - Homework05: [factor, figure, hygiene](homework/hw05-hygiene.md)
+
+**STAT547M**
 
 - Homework07: [candy data wrangling](homework/hw07-candy.md)
 - Homework08: [build an R package](homework/hw08-rpkg.md)
