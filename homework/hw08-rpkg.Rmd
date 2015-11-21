@@ -68,7 +68,19 @@ In this [homework-assignment](http://stat545-ubc.github.io/hw10_package.html), w
     - [foofactor](https://github.com/csiu/foofactor) is public ... if only I had private repos ... 
 - [] Write your reflections in a document in your normal STAT 545 course repo and open the usual issue there. Make sure to provide a link to your package, so TAs/prof/peers can find it for review!
 
-## Reflection/stream of concious thought
+## Reflection
+Overall, I think this is a very useful homework assignment for any student to do. Not only does it coax us to create a *working* R package, but it also provides us a tool and centralized resource to encourage the development of any other R packages we can imagine. 
 
-`devtools` made developing an R package easy. Is it "an R package" or "a R package"? I remember we use to use `roxygen` to do documentation ... now this is nicely wrapped up with `devtools::document()`. In my packge I included example data. You can do this by `devtools::use_data(robj)` to save the example data to `data/robj.rda` -- it is awesome. 
+In my packge [`foofactor`](https://github.com/csiu/foofactor), I included example data: `exampleFactor1`, `exampleFactor2`, and `exampleFactor3`. This was so that I can quickly refer to some example factors in the README/vignette without specifying something ugly (and not the point) like `iris$Species[c(1, 51, 101)]`. 
+
+> **\[TIP]** One can include example data by `devtools::use_data(robj)` to save the example data to `data/robj.rda` where it can be loaded with the package is installed -- by the way, it is awesome!
+
+In my package I have included a standard [readme](https://github.com/csiu/foofactor/blob/master/README.md) as well as a [vignette](https://github.com/csiu/foofactor/blob/master/vignettes/foofactor.Rmd) which is *more verbose than my readme*. In my vignette, I have display all the options of my functions. You can view the vignette (with its output) by running `vignette("foofactor", package = "foofactor")`.
+
+> **\[RESOURCE]** [Vignettes: long-form documentation](http://r-pkgs.had.co.nz/vignettes.html) -- by Hadley Wickham
+
+`devtools` in combination with git made developing an R package easy. With git, we are able to see what files are updated once a devtool function is ran; e.g. after running `document()`, we can see that files in `man/*Rd` may be updated.
+
+Furthermore, I'm glad Jenny introduced `devtools`. I recall that prior to `devtools`, we used `roxygen2` to update documentation (... or worse ... to update each file hand). Now, the use of roxygen is nicely wrapped up with `devtools::document()`. 
+
 
