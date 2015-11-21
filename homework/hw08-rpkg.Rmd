@@ -78,6 +78,8 @@ In my packge [`foofactor`](https://github.com/csiu/foofactor), I included exampl
 
 > **\[TIP]** One can include example data by `devtools::use_data(robj)` to save the example data to `data/robj.rda` where it can be loaded with the package is installed -- by the way, it is awesome!
 
+Furthermore, in order for people to be able to actually use the dataset, one needs to mention the dataset in the `data/` directory. This therefore meant we need to [document the datasets](http://r-pkgs.had.co.nz/data.html).
+
 In my package I have included a standard [readme](https://github.com/csiu/foofactor/blob/master/README.md) as well as a [vignette](https://github.com/csiu/foofactor/blob/master/vignettes/foofactor.Rmd) which is *more verbose than my readme*. In my vignette, I have display all the options of my functions. You can view the vignette (with its output) by running `vignette("foofactor", package = "foofactor")`.
 
 > **\[RESOURCE]** [Vignettes: long-form documentation](http://r-pkgs.had.co.nz/vignettes.html) -- by Hadley Wickham
@@ -86,4 +88,6 @@ In my package I have included a standard [readme](https://github.com/csiu/foofac
 
 Furthermore, I'm glad Jenny introduced `devtools`. I recall that prior to `devtools`, we used `roxygen2` to update documentation (... or worse ... to update each file hand). Now, the use of roxygen is nicely wrapped up with `devtools::document()`. 
 
+#### Extra
+- In addition to `foofactor`, I also created another package called [`candysurvey`](https://github.com/csiu/candysurvey) which contains the candy survey data I tidied from the past weeks. In this package, I also created some unit tests to validate that I imported data correctly (e.g. no strangeness when I convert from factor to integer data for i.e. `age` and `n_mints` variables). 
 
