@@ -67,7 +67,7 @@ In this [homework-assignment](http://stat545-ubc.github.io/hw10_package.html), w
     - [README](https://github.com/csiu/foofactor/blob/master/README.md)
     - `vignette("foofactor", package = "foofactor")`
 - [x] Push your package to GitHub, preferably a public repo. If you are uncomfortable with that, please contact Jenny and we’ll work around that. 
-    - [foofactor](https://github.com/csiu/foofactor) is public ... if only I had private repos ... 
+    - [foofactor](https://github.com/csiu/foofactor) is public ... <strike>if only I had private repos</strike>...
 - [x] Write your reflections in a document in your normal STAT 545 course repo and open the usual issue there. Make sure to provide a link to your package, so TAs/prof/peers can find it for review!
     - Below ;)
 
