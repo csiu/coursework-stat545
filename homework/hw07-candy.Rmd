@@ -13,11 +13,17 @@ options(knitr.table.format = 'markdown')
 
 I have cleaned up candy data here: 
 
-- add [user id column](https://github.com/csiu/candyplay/blob/master/data-raw/02_add-user-column.md)
-- cleanup for [general factors](https://github.com/csiu/candyplay/blob/master/data-raw/03_tidy1.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/03_tidy1.csv)
-- cleanup for [guess number of mints](https://github.com/csiu/candyplay/blob/master/data-raw/04_tidy2-mints.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/04_tidy2-mints.csv)
-- cleanup for [age](https://github.com/csiu/candyplay/blob/master/data-raw/05_tidy3-age.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/05_tidy3-age.csv)
-- cleanup for [the candy itself](https://github.com/csiu/candyplay/blob/master/data-raw/06_tidy4-candy.md) | resulting [csv file](https://github.com/csiu/candyplay/blob/master/data-raw/06_tidy4-candy.csv)
+- add [user id column](https://github.com/csiu/candysurvey/blob/master/data-raw/02_add-user-column.md)
+- cleanup for [general factors](https://github.com/csiu/candysurvey/blob/master/data-raw/03_tidy1.md) | resulting [csv file](https://github.com/csiu/candysurvey/blob/master/data-raw/03_tidy1.csv)
+- cleanup for [guess number of mints](https://github.com/csiu/candysurvey/blob/master/data-raw/04_tidy2-mints.md) | resulting [csv file](https://github.com/csiu/candysurvey/blob/master/data-raw/04_tidy2-mints.csv)
+- cleanup for [age](https://github.com/csiu/candysurvey/blob/master/data-raw/05_tidy3-age.md) | resulting [csv file](https://github.com/csiu/candysurvey/blob/master/data-raw/05_tidy3-age.csv)
+- cleanup for [the candy itself](https://github.com/csiu/candysurvey/blob/master/data-raw/06_tidy4-candy.md) | resulting [csv file](https://github.com/csiu/candysurvey/blob/master/data-raw/06_tidy4-candy.csv)
+
+---
+
+**\[EXTRA]:** I have also made this candy survey data that I cleaned up into  an R package: [`candysurvey`](https://github.com/csiu/candysurvey).
+
+---
 
 # Use of candy data
 
@@ -655,6 +661,7 @@ self_reported_as_old_predictions$predicted_age %>%
 - If you taking the survey at night, you are not likely to guess there are more mints in my hand
 - If you are 40 or older, you are not likely to feel more joy towards mint candy
 - Most people who self reported as old are between 35 - 40
+- I have also made this candy survey data that I cleaned up into  an R package: [`candysurvey`](https://github.com/csiu/candysurvey)
 
 ----
 ## [ASIDE]: Candy data art
