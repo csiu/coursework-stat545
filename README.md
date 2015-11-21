@@ -49,7 +49,7 @@ _These notes are the difference between what I already know and what I find inte
 - Homework05: [factor, figure, hygiene](homework/hw05-hygiene.md)
 
 - Homework07: [candy data wrangling](homework/hw07-candy.md)
-- Homework08: 
+- Homework08: [build an R package](homework/hw08-rpkg.md)
 - Homework09:
 - Homework10:
 - Homework11:

@@ -1,11 +1,6 @@
----
-title: 'HW: create an R package'
-author: "csiu"
-date: "November 19, 2015"
-output: 
-    html_document:
-        keep_md: yes
----
+# HW: create an R package
+csiu  
+November 19, 2015  
 
 ----
 
