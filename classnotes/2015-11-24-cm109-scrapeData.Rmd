@@ -1,0 +1,65 @@
+---
+title: "getting data off the internet"
+author: "csiu"
+date: "November 24, 2015"
+output:
+    html_document:
+        keep_md: yes
+---
+```{r}
+suppressPackageStartupMessages(library(dplyr))
+```
+
+- [outline](http://stat545-ubc.github.io/cm109_data-from_web.html)
+- [activity](http://stat545-ubc.github.io/webdata02_activity.html)
+
+- dplyr tip: `{ ... }` <- don't pass in as first argument  ... only at dot
+
+## [Get data off internet](http://stat545-ubc.github.io/webdata01_slides.html#1)
+1. click and download
+2. install and play e.g. R package
+3. API query - what kind of Q can computer ask
+4. scrape
+
+> [ropensci](https://ropensci.org) - look at packages ... community of people getting data off the internet
+
+### Example of install and play
+```{r}
+# install.packages("gender")
+
+library(gender)
+gender("Andrew")
+```
+```
+> gender("Andrew")
+The genderdata package needs to be installed.
+Install the genderdata package? 
+
+1: Yes
+2: No
+```
+
+- `lazyload` -- not load data in ram until use
+
+### packages 
+- is it a boy or a girl? `gender`
+- Sightings of birds: `rebird`
+- Searching geographic info: `geonames`
+    - http://www.geonames.org
+    - Geonames also helps us search Wikipedia.
+
+```{r error=TRUE}
+library(geonames)
+#> No geonamesUsername set. See http://geonames.wordpress.com/2010/03/16/ddos-part-ii/ and set one with options(geonamesUsername="foo") for some services to work
+
+## Need to set username
+# options(geonamesUsername="?????")
+## Put in .Rprofile
+
+GNwikipediaSearch("London") %>%
+  select(-summary) %>%
+    head %>%
+    knitr::kable(format = "markdown")
+```
+
+- Searching the Public Library of Science: `rplos`
