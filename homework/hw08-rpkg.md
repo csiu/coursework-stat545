@@ -4,7 +4,7 @@ November 19, 2015
 
 ----
 
-In this [homework-assignment](http://stat545-ubc.github.io/hw10_package.html), we made an R package  called [`foofactors`](https://github.com/csiu/foofactor).
+In this [homework-assignment](http://stat545-ubc.github.io/hw10_package.html), we made an R package  called [`foofactor`](https://github.com/csiu/foofactor).
 
 ----
 
