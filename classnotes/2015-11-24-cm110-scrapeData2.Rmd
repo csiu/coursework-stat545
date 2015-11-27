@@ -1,0 +1,57 @@
+---
+title: "getting data off the internet pt 2"
+author: "csiu"
+date: "November 26, 2015"
+output:
+    html_document:
+        keep_md: yes
+---
+- [outline](http://stat545-ubc.github.io/webdata03_activity.html)
+- http://www.programmableweb.com
+
+## Activity
+```{r message=FALSE}
+library(knitr)
+library(curl)
+library(jsonlite)
+library(XML)
+library(httr)
+library(rvest)
+library(magrittr)
+library(dplyr)
+library(tidyr)
+#library(countrycode)
+```
+
+
+- API -- method/function build in background so you can interact in structure way
+- structure of API: `<base url>?<key>=<value>`
+```{r}
+## MAKE REQUEST
+omdb <- function(Title, Year, Plot, Format){
+  baseurl <- "http://www.omdbapi.com/?"
+  params <- c("t=", "y=", "plot=", "r=")
+  values <- c(Title, Year, Plot, Format)
+  param_values <- Map(paste0, params, values)
+  args <- paste0(param_values, collapse = "&")
+  paste0(baseurl, args)
+}
+
+omdb("Interstellar", "2014", "short", "xml")
+```
+
+Make and read connection
+```{r}
+request_interstellar <- omdb("Interstellar", "2014", "short", "xml")
+con <-  curl(request_interstellar)
+answer_xml <- readLines(con)
+```
+
+- HTTP protocal | `httr`
+    - XML | `XML xml2` -> API
+    - JSON | `jsonlite` -> API
+    - HTML | `rvest` -> Scraping
+
+- Server code
+    - 404 - error
+    - 200 - success
