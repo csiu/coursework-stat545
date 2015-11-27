@@ -1,9 +1,9 @@
 ## Get arguments from command line
 ## if NA, add default arguments
 args <- commandArgs(trailingOnly = TRUE)
-fig1 <- args[1]
-fig2 <- args[2]
-outfile <- args[3]
+fig1 <- ifelse(!is.na(args[1]), args[1], "skyscraper.fig.byCity.png")
+fig2 <- ifelse(!is.na(args[2]), args[2], "skyscraper.fig.perFloor.png")
+outfile <- ifelse(!is.na(args[3]), args[3], "skyscraper.summary.md")
 
 
 # Make file content -------------------------------------------------------
