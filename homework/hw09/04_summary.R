@@ -7,8 +7,7 @@ outfile <- args[3]
 
 
 # Make file content -------------------------------------------------------
-fileContent <- sprintf('
----
+fileContent <- sprintf('---
 output:
     html_document:
         keep_md: yes
