@@ -1,0 +1,101 @@
+rank,building_name,city,height_m,height_ft,floors,year_completed,material,use
+1,Burj Khalifa,Dubai (AE),828,2717,163,2010,steel/concrete,office / residential / hotel
+2,Makkah Royal Clock Tower,Mecca (SA),601,1972,120,2012,steel/concrete,other / hotel
+3,One World Trade Center,New York City (US),541.3,1776,94,2014,composite,office
+4,TAIPEI 101,Taipei (TW),508,1667,101,2004,composite,office
+5,Shanghai World Financial Center,Shanghai (CN),492,1614,101,2008,composite,hotel / office
+6,International Commerce Centre,Hong Kong (CN),484,1588,108,2010,composite,hotel / office
+7,Petronas Twin Tower 1,Kuala Lumpur (MY),451.9,1483,88,1998,composite,office
+7,Petronas Twin Tower 2,Kuala Lumpur (MY),451.9,1483,88,1998,composite,office
+9,Zifeng Tower,Nanjing (CN),450,1476,66,2010,composite,hotel / office
+10,Willis Tower,Chicago (US),442.1,1451,108,1974,steel,office
+11,KK100,Shenzhen (CN),441.8,1449,100,2011,composite,hotel / office
+12,Guangzhou International Finance Center,Guangzhou (CN),438.6,1439,103,2010,composite,hotel / office
+13,Trump International Hotel & Tower,Chicago (US),423.2,1389,98,2009,concrete,residential / hotel
+14,Jin Mao Tower,Shanghai (CN),420.5,1380,88,1999,composite,hotel / office
+15,Princess Tower,Dubai (AE),413.4,1356,101,2012,steel/concrete,residential
+16,Al Hamra Tower,Kuwait City (KW),412.6,1354,80,2011,concrete,office
+17,Two International Finance Centre,Hong Kong (CN),412,1352,88,2003,composite,office
+18,23 Marina,Dubai (AE),392.4,1287,88,2012,concrete,residential
+19,CITIC Plaza,Guangzhou (CN),390.2,1280,80,1996,concrete,office
+20,Shun Hing Square,Shenzhen (CN),384,1260,69,1996,composite,office
+21,Burj Mohammed Bin Rashid,Abu Dhabi (AE),381.2,1251,88,2014,concrete,residential
+22,Empire State Building,New York City (US),381,1250,102,1931,steel,office
+23,Elite Residence,Dubai (AE),380.5,1248,87,2012,concrete,residential
+24,Central Plaza,Hong Kong (CN),373.9,1227,78,1992,concrete,office
+25,Bank of China Tower,Hong Kong (CN),367.4,1205,72,1990,composite,office
+26,Bank of America Tower,New York City (US),365.8,1200,55,2009,composite,office
+27,Almas Tower,Dubai (AE),360,1181,68,2008,concrete,office
+28,JW Marriott Marquis Hotel Dubai Tower 1,Dubai (AE),355.4,1166,82,2012,concrete,hotel
+28,JW Marriott Marquis Hotel Dubai Tower 2,Dubai (AE),355.4,1166,82,2013,concrete,hotel
+30,Emirates Tower One,Dubai (AE),354.6,1163,54,2000,composite,office
+31,OKO - Residential Tower,Moscow (RU),353.6,1160,90,2015,concrete,residential / serviced apartments / hotel
+32,The Torch,Dubai (AE),352,1155,86,2011,concrete,residential
+33,The Pinnacle,Guangzhou (CN),350.3,1149,60,2012,concrete,office
+34,T & C Tower,Kaohsiung (TW),347.5,1140,85,1997,composite,hotel / office / retail
+35,Aon Center,Chicago (US),346.3,1136,83,1973,steel,office
+36,The Center,Hong Kong (CN),346,1135,73,1998,steel,office
+37,John Hancock Center,Chicago (US),343.7,1128,100,1969,steel,residential / office
+38,ADNOC Headquarters,Abu Dhabi (AE),342,1122,76,2015,concrete,office
+39,Wuxi International Finance Square,Wuxi (CN),339,1112,68,2014,composite,hotel / office
+40,Chongqing World Financial Center,Chongqing (CN),338.9,1112,72,2015,composite,office
+41,Mercury City Tower,Moscow (RU),338.8,1112,75,2013,concrete,residential / office
+42,Tianjin World Financial Center,Tianjin (CN),336.9,1105,75,2011,composite,office
+43,Shimao International Plaza,Shanghai (CN),333.3,1094,60,2006,concrete,hotel / office / retail
+44,Rose Rayhaan by Rotana,Dubai (AE),333,1093,71,2007,composite,hotel
+45,Minsheng Bank Building,Wuhan (CN),331,1086,68,2008,steel,office
+46,China World Tower,Beijing (CN),330,1083,74,2010,composite,hotel / office
+47,Keangnam Hanoi Landmark Tower,Hanoi (VN),328.6,1078,72,2012,concrete,hotel / residential / office
+48,Longxi International Hotel,Jiangyin (CN),328,1076,72,2011,composite,residential / hotel
+49,Al Yaqoub Tower,Dubai (AE),328,1076,69,2013,concrete,hotel / office
+50,Wuxi Suning Plaza 1,Wuxi (CN),328,1076,67,2014,composite,hotel / serviced apartments / office
+51,The Index,Dubai (AE),326,1070,80,2010,concrete,residential / office
+52,The Landmark,Abu Dhabi (AE),324,1063,72,2013,concrete,residential / office
+53,Deji Plaza,Nanjing (CN),324,1063,62,2013,composite,hotel / office
+54,Q1 Tower,Gold Coast (AU),322.5,1058,78,2005,concrete,residential
+55,Wenzhou Trade Center,Wenzhou (CN),321.9,1056,68,2011,concrete,hotel / office
+56,Burj Al Arab,Dubai (AE),321,1053,56,1999,composite,hotel
+57,Nina Tower,Hong Kong (CN),320.4,1051,80,2006,concrete,hotel / office
+58,Chrysler Building,New York City (US),318.9,1046,77,1930,steel,office
+59,New York Times Tower,New York City (US),318.8,1046,52,2007,steel,office
+60,HHHR Tower,Dubai (AE),317.6,1042,72,2010,concrete,residential
+61,Nanjing International Youth Cultural Centre T…,Nanjing (CN),314.5,1032,68,2015,composite,hotel / office
+62,Bank of America Plaza,Atlanta (US),311.8,1023,55,1992,composite,office
+63,Moi Center Tower A,Shenyang (CN),311,1020,75,2014,composite,hotel / office
+64,U.S. Bank Tower,Los Angeles (US),310.3,1018,73,1990,steel,office
+65,Ocean Heights,Dubai (AE),310,1017,83,2010,concrete,residential
+66,Menara Telekom,Kuala Lumpur (MY),310,1017,55,2001,concrete,office
+67,Fortune Center,Guangzhou (CN),309.4,1015,73,2015,composite,office
+68,Pearl River Tower,Guangzhou (CN),309.4,1015,71,2013,composite,office
+69,Emirates Tower Two,Dubai (AE),309,1014,56,2000,concrete,hotel
+70,Stalnaya Vershina,Moscow (RU),308.9,1013,72,2015,composite,hotel / office
+71,Burj Rafal,Riyadh (SA),307.9,1010,68,2014,concrete,residential / hotel
+72,The Franklin - North Tower,Chicago (US),306.9,1007,60,1989,composite,office
+73,Cayan Tower,Dubai (AE),306.4,1005,73,2013,concrete,residential
+74,One57,New York City (US),306.1,1004,75,2014,steel/concrete,residential / hotel
+75,East Pacific Center Tower A,Shenzhen (CN),306,1004,85,2013,concrete,residential
+76,The Shard,London (GB),306,1004,73,2013,composite,residential / hotel / office
+77,JPMorgan Chase Tower,Houston (US),305.4,1002,75,1982,composite,office
+78,Etihad Towers T2,Abu Dhabi (AE),305.3,1002,80,2011,concrete,residential
+79,Northeast Asia Trade Tower,Incheon (KR),305,1001,68,2011,composite,residential / hotel / office
+80,Baiyoke Tower II,Bangkok (TH),304,997,85,1997,concrete,hotel
+81,Wuxi Maoye City - Marriott Hotel,Wuxi (CN),303.8,997,68,2014,composite,hotel
+82,Two Prudential Plaza,Chicago (US),303.3,995,64,1990,concrete,office
+83,Diwang International Fortune Center,Liuzhou (CN),303,994,75,2015,composite,residential / hotel / office
+84,Jiangxi Nanchang Greenland Central Plaza 1,Nanchang (CN),303,994,59,2015,composite,office
+84,Jiangxi Nanchang Greenland Central Plaza 2,Nanchang (CN),303,994,59,2015,composite,office
+86,Shenzhen Changcheng Center,Shenzhen (CN),303,994,61,2014,composite,hotel / office
+87,Leatop Plaza,Guangzhou (CN),302.7,993,64,2012,composite,office
+88,Wells Fargo Plaza,Houston (US),302.4,992,71,1983,steel,office
+89,Kingdom Centre,Riyadh (SA),302.3,992,41,2002,steel/concrete,residential / hotel / office
+90,The Address,Dubai (AE),302.2,991,63,2008,concrete,residential / hotel
+91,Capital City Moscow Tower,Moscow (RU),301.8,990,76,2010,concrete,residential
+92,Greenland Puli Center,Jinan (CN),301,988,61,2015,composite,residential / office
+93,Doosan Haeundae We've the Zenith Tower A,Busan (KR),300,984,80,2011,concrete,residential
+94,Torre Costanera,Santiago (CL),300,984,62,2014,concrete,office
+95,Abeno Harukas,Osaka (JP),300,984,60,2014,steel,hotel / office / retail
+95,Arraya Tower,Kuwait City (KW),300,984,60,2009,concrete,office
+97,Aspire Tower,Doha (QA),300,984,36,2007,composite,hotel / office
+98,First Canadian Place,Toronto (CA),298.1,978,72,1975,steel,office
+99,One Island East,Hong Kong (CN),298.1,978,68,2008,concrete,office
+100,Ilham Baru Tower,Kuala Lumpur (MY),298,978,64,2015,concrete,residential / office
