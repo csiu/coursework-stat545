@@ -13,7 +13,20 @@ Instead of the gapminder data, I chose to use data that I scraped off the intern
 There was no obvious way to download this data from the [website](http://www.skyscrapercenter.com/buildings) in a structured format, so I decided to apply what I learned in the previous homework and create an R package [`csiu/skyscraper`](https://github.com/csiu/skyscraper) to house the [csv data](https://raw.githubusercontent.com/csiu/skyscraper/master/inst/skyscraper.csv).
 
 ## The pipeline
+
+![](figure/hw09-makefile.png)
+
+My pipeline work as follows:
+
+1. `01_download.R` will **download** data called skyscraper.csv
+2. `02_parse.R` will then do some simple calculations and **transform** skyscraper.csv => skyscraper2.csv
+3. `03_render.R` will take skyscraper2.csv and **render** 2 figures: skyscraper.fig.byCity.png and skyscraper.fig.perFloor.png
+4. `04_summary.R` will then take the 2 figures and **consolidate** them to 1 simple skyscraper.summary.md report
+5. If you are running the `Makefile` (and not `05_fake-makefile.R`), the report will be converted md -> html -> pdf via `pandoc`
+
 *Note: `downloader` and `readr` should be installed.*
+
+> **[REFERENCE]** Workflow was generated using: https://github.com/vak/makefile2dot
 
 ### ... running the R way
 
