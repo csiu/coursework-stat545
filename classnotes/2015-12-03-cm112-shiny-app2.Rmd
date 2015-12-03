@@ -18,7 +18,8 @@ output:
     1. host on http://www.shinyapps.io -> up to 5 FREE shiny apps
     2. host your own shiny server
 
-- Shiny in R markdwon
+- Shiny in R markdown
+    - Don't know if it works on shinyapps.io
 ```
 ---
 output: html_document
@@ -28,3 +29,18 @@ runtime: shiny
 
 - [Stop reactions with `isolate()`](http://shiny.rstudio.com/articles/isolation.html)
     - e.g. `islate(data <- rnorm(input$num))`
+- global.R - objects here are available to both ui.R and server.R
+- `DT::dataTableOutput()` / `tableOutput()` -- make table looks nicer
+- `navbarPage()` or `tabsetPanel()` for multiple tabs in UI
+
+- Recommended add-on packages to Shiny
+    - `shinythemes` (http://rstudio.github.io/shinythemes/)
+        - Easily alter the appearance of your app
+    - `shinyjs` (https://github.com/daattali/shinyjs)
+        - Enhance user experience in Shiny apps
+    - `leaflet` (http://rstudio.github.io/leaflet/)
+        - Add interactive maps to your apps
+    - `ggvis` (http://ggvis.rstudio.com/)
+        - Similar to ggplot2 but plots are web-based and more interactive
+    - `shinydashboard` (https://rstudio.github.io/shinydashboard/)
+        - Gives you tools to create “dashboards”
