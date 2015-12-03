@@ -1,0 +1,30 @@
+---
+title: "shiny app2"
+author: "csiu"
+date: "December 3, 2015"
+output: 
+    html_document:
+        keep_md: yes
+---
+- [outline](http://stat545-ubc.github.io/cm112_shiny.html)
+- [slides](https://docs.google.com/presentation/d/1dXhqqsD7dPOOdcC5Y7RW--dEU7UfU52qlb0YD3kKeLw/edit)
+- [activity "Building Shiny apps" continued](http://stat545-ubc.github.io/shiny01_activity.html)
+
+## Shiny apps continued ...
+- `reactive({...})` - to assign a reactive variable
+- `observe({...})` - to access a reactive variable
+
+- Share your shiny app!
+    1. host on http://www.shinyapps.io -> up to 5 FREE shiny apps
+    2. host your own shiny server
+
+- Shiny in R markdwon
+```
+---
+output: html_document
+runtime: shiny
+---
+```
+
+- [Stop reactions with `isolate()`](http://shiny.rstudio.com/articles/isolation.html)
+    - e.g. `islate(data <- rnorm(input$num))`
