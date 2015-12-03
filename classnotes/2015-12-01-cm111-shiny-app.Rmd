@@ -1,0 +1,49 @@
+---
+title: "shiny app"
+author: "csiu"
+date: "December 1, 2015"
+output:
+    html_document:
+        keep_md: yes
+---
+
+- [outline](http://stat545-ubc.github.io/cm111_shiny.html)
+- [slides](https://docs.google.com/presentation/d/1dXhqqsD7dPOOdcC5Y7RW--dEU7UfU52qlb0YD3kKeLw/edit#slide=id.gd565d6fc7_0_65)
+- [shiny examples](http://www.showmeshiny.com)
+- [shiny html tags](http://shiny.rstudio.com/articles/tag-glossary.html)
+- [OpenDataBC datasets](https://www.opendatabc.ca/dataset)
+
+```{r eval=FALSE}
+install.packages("shiny")
+shiny::runExample("01_hello")
+```
+
+Shiny app template
+```{r eval=FALSE}
+library(shiny)
+ui <- fluidPage()
+server <- function(input, output) {}
+shinyApp(ui = ui, server = server)
+```
+
+- `fluidPage()`
+- `sidebarLayout()`
+
+```
+fluidPage(
+  titlePanel("My Shiny app"),
+  sidebarLayout(
+    sidebarPanel(
+      "This is a side panel"
+    ),
+    mainPanel(
+      "And this is the main stuff"
+    )
+  )
+)
+```
+
+- Reactivity
+
+## Activity
+- [Building Shiny apps](http://stat545-ubc.github.io/shiny01_activity.html)

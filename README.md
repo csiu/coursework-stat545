@@ -38,7 +38,7 @@ _These notes are the difference between what I already know and what I find inte
 - [2015-11-19_cm108: make part2](classnotes/2015-11-19-cm108-make2.md)
 - [2015-11-24_cm109: data scraping](classnotes/2015-11-24-cm109-scrapeData.md)
 - [2015-11-26_cm110: data scraping pt2](classnotes/2015-11-26-cm110-scrapeData2.md)
-- [2015-12-01_cm111:]
+- [2015-12-01_cm111: shiny app](classnotes/2015-12-01-cm111-shiny-app.md)
 - 2015-12-02_cm112:
 
 ## Homework
