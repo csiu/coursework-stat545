@@ -14,6 +14,11 @@ In addition to [`csiu/skyscraper`](https://github.com/csiu/skyscraper), I also c
 ## The data
 The source of this data comes from **The Lost and Pound**: *helping lost pets since 2005* at http://lost.quiggle.org
 
+In the [FAQ section of their website](http://lost.quiggle.org/faq.html), they also mentioned:
+
+> **17. How do you find stuck pets?**
+> The basic answer is by randomly typing in names and checking if they are in the pound. Yes that's right, trial and error!
+
 And if you have not guessed it by now, given that I used the term “shoyru”, “pet” and “quiggle”, this data is about [Neopets](https://en.wikipedia.org/wiki/Neopetsneo), a virtual pet website available at http://neopets.com. In particular this data describes the species, colour, and sex of pets abandoned to the pound available for adoption.
 
 **Backtrack to why this dataset**
@@ -267,6 +272,52 @@ dat %>%
 |[`BlueStrike_999`](http://www.neopets.com/petlookup.phtml?pet=BlueStrike_999)             |Strawberry |male   |2015-09-21                        |
 |[`Green737286381`](http://www.neopets.com/petlookup.phtml?pet=Green737286381)             |Striped    |male   |2015-11-03                        |
 |[`Rocky6721337`](http://www.neopets.com/petlookup.phtml?pet=Rocky6721337)                 |Tyrannian  |male   |2015-04-04                        |
+
+> **When were the special Shoyrus added?**
+
+
+```r
+## The data
+dat.special <- dat %>%
+  filter(! color %in% c("Blue", "Red", "Yellow", "Green")) %>% 
+  group_by(date_added, color) %>% 
+  summarise(count = n()) %>% 
+  ungroup()
+
+## Define color factor order by earliest abandon date
+list_of_special_order <- dat.special %>% 
+  group_by(color) %>% 
+  summarise(first_date = sort(date_added)[1]) %>% 
+  arrange(first_date) %>% 
+  .$color %>% 
+  as.character()
+
+## Order factor
+dat.special$color <- factor(dat.special$color, levels = list_of_special_order)
+
+## Plot
+dat.special %>% 
+  ggplot(aes(x = date_added, y = count)) +
+  geom_point(colour="black", fill="orange", pch=21) + 
+  ylim(0,6) +
+  xlab("") +
+  ylab("") +
+  ggtitle("When special Shoyrus were added by The Lost and Pound") +
+  facet_grid(color~.) +
+  theme(
+    strip.text.y = element_text(size = 6, angle = 315),
+    panel.margin = grid::unit(0.25, "lines"),
+    axis.text.y = element_text(size = 7.5)
+  )
+```
+
+![](figure/hw10-special-add-date-1.png) 
+
+Here we see that:
+
+- (besides Christmase colored ones,) most special Shoyrus were added after spring/summer 2014
+- 1 Snow and 1 Cloud Shoyru were stuck in the pound since winter 2011 and and spring/summer 2012
+- and there is a lot of Christmas colored Shoyrus
 
 **Other (what I consider less important) questions**
 
