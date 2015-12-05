@@ -441,6 +441,7 @@ dat.tmp %>%
              y = proportion,
              fill = sex)) +
   geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("#ef8a62", "#67a9cf")) +
   ggtitle("Proportion of males to females in common-colored Shoyru") +
   xlab("") +
   guides(fill = guide_legend(reverse=TRUE)) +
