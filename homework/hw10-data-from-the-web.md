@@ -9,24 +9,24 @@ For this [homework](http://stat545-ubc.github.io/hw10_data-from-web.html), we ar
 
 I have done so previously in [homework 9](https://github.com/STAT545-UBC/celia_siu/blob/master/homework/hw09-automation.md). The dataset that I created for this homework is taken from [The Skyscraper Center](http://www.skyscrapercenter.com/buildings) and it gives the information for the **100 tallest completed buildings in the world**. In the process of compiling this data for homework 9, I manually copied the [table from the website](http://www.skyscrapercenter.com/buildings) onto a spreadsheet and saved it into a [CSV file](https://raw.githubusercontent.com/csiu/skyscraper/master/inst/skyscraper.csv). I then created an R package and made it available at [`csiu/skyscraper`](https://github.com/csiu/skyscraper). As a simple test drive of the data, we can see (from the [README](https://github.com/csiu/skyscraper/blob/master/README.md)) that the tallest completed building is in Dubai.
 
-In addition to [`csiu/skyscraper`](https://github.com/csiu/skyscraper), I also created [`abandoned-shoyru.tsv`](https://gist.github.com/csiu/ea40d624baa5b172c561) of which will describe below.
+In addition to [`csiu/skyscraper`](https://github.com/csiu/skyscraper), I also created [`abandoned-shoyru.tsv`](https://gist.github.com/csiu/ea40d624baa5b172c561) (described below).
 
 ## The data
 The source of this data comes from **The Lost and Pound**: *helping lost pets since 2005* at http://lost.quiggle.org
 
-And if you have not guessed it by now, given that I used the term “Shoyru”, “pet” and “quiggle”, this data is about [Neopets](https://en.wikipedia.org/wiki/Neopetsneo), a virtual pet website available at http://neopets.com. In particular this data describes the species, colour, and sex of pets abandoned to the pound available for adoption.
+And if you have not guessed it by now, given that I used the term “shoyru”, “pet” and “quiggle”, this data is about [Neopets](https://en.wikipedia.org/wiki/Neopetsneo), a virtual pet website available at http://neopets.com. In particular this data describes the species, colour, and sex of pets abandoned to the pound available for adoption.
 
 **Backtrack to why this dataset**
 
-As a kid, I played Neopets and every December, I would go get the free daily gifts from the [Advent Calendar](http://www.neopets.com/winter/adventcalendar.phtml). I admit, I am still getting those gifts for they are a part of my childhood I'm not ready to let go. Anyways, as I was getting the gift, I start to wonder: does Neopets have an API? After a bit of light searching, Neopets does not appear to have one. Eventually, I somehow landed on the [The Lost and Pound](http://lost.quiggle.org) and found the concept hilarious (and honestly wished I stumbled into it sooner)... and so now here I am, scraping this data for [homework 10](http://stat545-ubc.github.io/hw10_data-from-web.html).
+As a kid, I played Neopets and every December, I would go get the free daily gifts from the [Advent Calendar](http://www.neopets.com/winter/adventcalendar.phtml). I admit I still am getting those gifts for they are a part of my childhood I'm not ready to let go (besides, it's only a few clicks here and there). Anyways, as I was getting the gift, I start to wonder: does Neopets have an API? After a bit of light searching, Neopets does not appear to have one. Eventually, I somehow landed on [The Lost and Pound](http://lost.quiggle.org) and found the concept hilarious (and honestly wished I stumbled into it sooner)... and so now here I am, scraping this data for [homework 10](http://stat545-ubc.github.io/hw10_data-from-web.html).
 
 **Structure of the website**
 
-In this website, the abandoned pets are listed by species. For the homework, I will focus on [Shoyru](http://www.neopets.com/shoyru/) (since this is the first neopet I created). Going to the [page for Shoyru at The Lost and Pound](http://lost.quiggle.org/neopets/shoyru), we see a pagination with 50 abandoned Shoyrus per page. We also see that in total there are 3312 abandoned Shoyrus. After a bit of calculation -- e.g. `ceiling(3312/50)` -- this make 67 pages of Shoyru listings.
+In this website, the abandoned pets are listed by species. For the homework, I will focus on [Shoyru](http://www.neopets.com/shoyru/) (since this is the first neopet I created). Going to the [page for Shoyru at The Lost and Pound](http://lost.quiggle.org/neopets/shoyru), we see a pagination with 50 abandoned Shoyrus per page. We also see that in total there are 3312 abandoned Shoyrus. After a bit of calculation -- e.g. `ceiling(3312/50)` -- this make 67 pages of Shoyru listings (on Dec 4, 2015).
 
 **The question**
 
-Like many superficial owners, we want to find the pets which are special. In particular, given the list of abandoned pets, we (or as least I) want to know the names of the pets that are not coloured red, green, blue, or yellow (i.e. those pets which are not commonly coloured / not by default available).
+Like many superficial owners, we want to find the pets which are special. In particular, given the list of abandoned pets, we (or as least I) want to know the names of the pets that are not coloured red, green, blue, or yellow (i.e. those pets which are not commonly coloured a.k.a. not available by default).
 
 ## Scraping the data
 
@@ -37,7 +37,7 @@ The main package I will use for scraping the HTML is [`rvest`](https://github.co
 ## Scraping HTML
 library(rvest)
 
-## Reformating data
+## Reformatting data
 library(tidyr)
 library(dplyr)
 library(readr)
@@ -56,7 +56,7 @@ main_url <- "http://lost.quiggle.org/neopets/shoyru"
 
 The `<main_url>` is page 1; if we want to go to page 2, we go to `<main_url>/2`; for page 3, we go to `<main_url>/3`; etc.
 
-In total there are 67 pages (since there is a total of 3312 Shoyrus and 50 Shoyrus per page). Programmatically, we can determing this information by parsing the pagination info ...
+In total there are 67 pages (since there is a total of 3312 Shoyrus and 50 Shoyrus per page). Programmatically, we can determine this information by parsing the pagination info ...
 
 > Shoyru 1-50 of 3312
 
@@ -77,9 +77,6 @@ number_of_pages <- function(main_url){
   (page_info[4] / (page_info[2] - page_info[1] + 1)) %>% 
     ceiling()  
 }
-
-## USING THIS FUNCTION
-# number_of_pages(main_url)
 ```
 
 ### The parsers
@@ -146,7 +143,9 @@ readr::write_tsv(the_data, "abandoned-shoyru.tsv")
 *Note: I have saved the data to [gist: ea40d624baa5b172c561](https://gist.github.com/csiu/ea40d624baa5b172c561)*
 
 ## Analysis
-In my analysis, I want to answer 1 main question: **given the list of abandoned pets, what are the names of the pets that are not commonly colored e.g. special**.
+In my analysis, I want to answer 1 main question: 
+
+> **Given the list of abandoned pets, what are the names of the pets that are not commonly colored i.e. the Shoyrus that are not colored red, green, yellow, or blue**.
 
 The first thing to do is to read in the data.
 
@@ -186,7 +185,7 @@ dat %>%
 
 ![](figure/hw10-color-counts-1.png) 
 
-Here we see that (as expected) the majority of abandoned Shoyru are commonly colored e.g. in blue, red, yellow, and green. Interestingly, more than 50 of abandoned Shoyru are Christmas colored. This somewhat large number can be explained by my somewhat background knowledge that one year the free Advent Calender gift was a Christmas paint brush which can be used to color any neopet into Christmas color... and prior to that, a Snow paint brush was offered...
+Here we see that (as expected) the majority of abandoned Shoyru are commonly colored e.g. in blue, red, yellow, and green. Interestingly, more than 50 of abandoned Shoyru are Christmas colored. This somewhat large number can be explained by my somewhat background knowledge that one year the free Advent Calendar gift was a Christmas Paint Brush ([Dec 6, 2008](http://www.jellyneo.net/?go=advent&id=08)) which can be used to color any neopet into Christmas color... and another year, a Snow paint brush was offered ([Dec 25, 2012](http://www.jellyneo.net/?go=advent&id=12))...
 
 **The list of special abandoned Shoyrus**
 
@@ -273,7 +272,9 @@ dat %>%
 
 Now that our question is answered -- and to be honest, that was the only real thing I was interested in -- here are other plots:
 
-- When does The Lost and Pound add more abandoned Shoyru to their listing?
+---
+
+> **When do The Lost and Pound add more abandoned Shoyru to their listing?**
 
 
 ```r
@@ -346,7 +347,10 @@ In this collection of figures, we see that:
 
 *Note: Keep in mind that pets can be adopted and thus might explain why there are more listings in 2015 than 2011.*
 
-- What is the proportion of males to females in the common-coloured, abandoned Shoyru population?
+---
+
+> **What is the proportion of males to females in the common-coloured, abandoned Shoyru population?**
+
 
 ```r
 standard_colors <- c("Red", "Yellow", "Blue", "Green")
@@ -394,7 +398,10 @@ dat.tmp %>%
 
 ![](figure/hw10-gender-ratio-1.png) 
 
-Here we see that only in the yellow Shoyru population is there more females than males.
+Here we see that only in the yellow abandoned Shoyru population is there more females than males.
+
+---
 
 ## Reflection 
-I once tried to scrape HTML with python and I remember having quite a difficult time. After having used [`rvest`](https://github.com/hadley/rvest), I can appreciate both `rvest` and the appeal of web scraping!
+I once tried to scrape HTML with python and I remember having quite a difficult time. After having used [`rvest`](https://github.com/hadley/rvest), I can appreciate both the appeal of web scraping and the superb job Hadley did in creating [`rvest`](https://github.com/hadley/rvest).
+
