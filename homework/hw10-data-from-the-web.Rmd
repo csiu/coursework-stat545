@@ -6,6 +6,11 @@ output:
     html_document:
         keep_md: yes
 ---
+```{r include=FALSE}
+knitr::opts_chunk$set(fig.path='figure/hw10-')
+options(knitr.table.format = 'markdown')
+```
+
 ## The Big Picture
 
 For this [homework](http://stat545-ubc.github.io/hw10_data-from-web.html), we are asked to create a new dataset by scraping the web.

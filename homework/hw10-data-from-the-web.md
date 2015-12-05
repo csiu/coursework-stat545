@@ -1,6 +1,8 @@
 # STAT547 HW10: Data from the web
 csiu  
 December 4, 2015  
+
+
 ## The Big Picture
 
 For this [homework](http://stat545-ubc.github.io/hw10_data-from-web.html), we are asked to create a new dataset by scraping the web.
@@ -182,7 +184,7 @@ dat %>%
   )
 ```
 
-![](hw10-data-from-the-web_files/figure-html/color-counts-1.png) 
+![](figure/hw10-color-counts-1.png) 
 
 Here we see that (as expected) the majority of abandoned Shoyru are commonly colored e.g. in blue, red, yellow, and green. Interestingly, more than 50 of abandoned Shoyru are Christmas colored. This somewhat large number can be explained by my somewhat background knowledge that one year the free Advent Calender gift was a Christmas paint brush which can be used to color any neopet into Christmas color... and prior to that, a Snow paint brush was offered...
 
@@ -334,7 +336,7 @@ cowplot::ggdraw() +
   cowplot::draw_plot(date_fig,      0,    0,   1, 0.49)
 ```
 
-![](hw10-data-from-the-web_files/figure-html/postings-1.png) 
+![](figure/hw10-postings-1.png) 
 
 In this collection of figures, we see that:
 
@@ -390,7 +392,7 @@ dat.tmp %>%
   theme_bw()
 ```
 
-![](hw10-data-from-the-web_files/figure-html/gender-ratio-1.png) 
+![](figure/hw10-gender-ratio-1.png) 
 
 Here we see that only in the yellow Shoyru population is there more females than males.
 
