@@ -56,4 +56,4 @@ _These notes are the difference between what I already know and what I find inte
 - Homework08: [build an R package](homework/hw08-rpkg.md)
 - Homework09: [automation/Makefile](homework/hw09-automation.md)
 - Homework10: [web scraping](homework/hw10-data-from-the-web.md)
-- Homework11:
+- Homework11: [shiny app](homework/hw11-shinyapp.md)
